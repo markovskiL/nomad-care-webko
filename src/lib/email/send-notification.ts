@@ -1,7 +1,5 @@
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 // Form type definition (inline to avoid dependency on generated types)
 interface Form {
   id: string | number
@@ -43,6 +41,9 @@ export async function sendFormNotification(
   }
 
   try {
+    // Initialize Resend inside the function to avoid build-time errors
+    const resend = new Resend(process.env.RESEND_API_KEY)
+
     // Format the form data into readable HTML
     const formattedData = formatFormData(form, data)
 
