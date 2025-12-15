@@ -39,7 +39,7 @@ export async function getSiteSettings(locale?: string): Promise<SiteSettingsData
     const payload = await getPayloadClient()
     const settings = await payload.findGlobal({
       slug: "site-settings",
-      locale: locale,
+      locale: locale as "en" | "bg" | "all" | undefined,
       depth: 1,
     })
     return settings as SiteSettingsData

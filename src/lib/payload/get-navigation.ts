@@ -6,7 +6,7 @@ export async function getNavigation(locale?: string): Promise<NavigationData | n
     const payload = await getPayloadClient()
     const navigation = await payload.findGlobal({
       slug: "navigation",
-      locale: locale,
+      locale: locale as "en" | "bg" | "all" | undefined,
       depth: 2,
     })
     return navigation as NavigationData

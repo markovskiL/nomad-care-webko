@@ -2,7 +2,6 @@
 
 import { getPayloadClient } from "@/lib/payload"
 import { sendFormNotification } from "@/lib/email/send-notification"
-import type { Form } from "@/payload-types"
 
 interface SubmitResult {
   success: boolean
@@ -24,7 +23,7 @@ export async function submitFormAction(
     const form = await payload.findByID({
       collection: "forms",
       id: typeof formId === "string" ? parseInt(formId, 10) : formId,
-    }) as Form
+    })
 
     if (!form) {
       return { success: false, error: "Form not found" }

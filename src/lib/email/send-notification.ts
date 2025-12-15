@@ -1,7 +1,18 @@
 import { Resend } from "resend"
-import type { Form } from "@/payload-types"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
+
+// Form type definition (inline to avoid dependency on generated types)
+interface Form {
+  id: string | number
+  title: string
+  fields?: Array<{ name: string; label?: string | null }> | null
+  emailNotification?: {
+    enabled?: boolean | null
+    recipientEmail?: string | null
+    emailSubject?: string | null
+  } | null
+}
 
 interface SendNotificationResult {
   success: boolean
@@ -15,11 +26,7 @@ export async function sendFormNotification(
   form: Form,
   data: Record<string, unknown>
 ): Promise<SendNotificationResult> {
-  const emailNotification = form.emailNotification as {
-    enabled?: boolean
-    recipientEmail?: string
-    emailSubject?: string
-  } | undefined
+  const emailNotification = form.emailNotification
 
   const isEnabled = emailNotification?.enabled
   const recipient = emailNotification?.recipientEmail
@@ -69,7 +76,7 @@ export async function sendFormNotification(
  */
 function formatFormData(form: Form, data: Record<string, unknown>): string {
   const lines: string[] = []
-  const fields = form.fields as Array<{ name: string; label?: string }> | undefined
+  const fields = form.fields
 
   for (const [key, value] of Object.entries(data)) {
     // Find the field config to get the label

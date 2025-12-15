@@ -22,7 +22,7 @@ export async function getPagesForFooter(locale?: string): Promise<FooterLinkGrou
           equals: true,
         },
       },
-      locale: locale,
+      locale: locale as "en" | "bg" | "all" | undefined,
       limit: 100,
     })
 

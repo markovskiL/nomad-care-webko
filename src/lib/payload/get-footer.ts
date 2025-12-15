@@ -6,7 +6,7 @@ export async function getFooter(locale?: string): Promise<FooterData | null> {
     const payload = await getPayloadClient()
     const footer = await payload.findGlobal({
       slug: "footer",
-      locale: locale,
+      locale: locale as "en" | "bg" | "all" | undefined,
       depth: 2,
     })
     return footer as FooterData

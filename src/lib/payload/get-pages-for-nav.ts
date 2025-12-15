@@ -23,7 +23,7 @@ export async function getPagesForNavigation(locale?: string): Promise<NavPageIte
           equals: true,
         },
       },
-      locale: locale,
+      locale: locale as "en" | "bg" | "all" | undefined,
       limit: 100,
       depth: 1, // Populate parent relationship
     })
