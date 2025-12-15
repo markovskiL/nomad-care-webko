@@ -9,6 +9,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: "http", hostname: "localhost" },
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+      { protocol: "https", hostname: "nomad-care-webko.vercel.app" },
     ],
   },
   webpack: (webpackConfig) => {
