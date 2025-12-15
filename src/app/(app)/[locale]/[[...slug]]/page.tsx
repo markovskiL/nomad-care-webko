@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
-import { getPageByPathname, getAllPages } from "@/lib/payload"
+import { getPageByPathname, getAllPages, getChildPagesByParentId, getSiteSettings } from "@/lib/payload"
 import { routing } from "@/lib/i18n/routing"
 import { ENABLE_LOCALIZATION, type Locale } from "@/lib/i18n/config"
 import { BlockRenderer, type SectionBlock } from "@/lib/blocks"
+import { ServicePage, type ServicePageData } from "@webko-labs/ui"
+import { submitFormAction } from "@/lib/forms"
 
 export const revalidate = 60
 
@@ -55,10 +57,10 @@ export default async function Page({ params }: PageProps) {
   setRequestLocale(locale)
 
   const pathname = getPathnameFromSlug(slugArray)
-  const page = await getPageByPathname(
-    pathname,
-    ENABLE_LOCALIZATION ? (locale as Locale) : undefined
-  )
+  const [page, siteSettings] = await Promise.all([
+    getPageByPathname(pathname, ENABLE_LOCALIZATION ? (locale as Locale) : undefined),
+    getSiteSettings(ENABLE_LOCALIZATION ? locale : undefined),
+  ])
 
   if (!page) {
     notFound()
@@ -66,7 +68,59 @@ export default async function Page({ params }: PageProps) {
 
   // Cast sections to SectionBlock array
   const sections = (page.sections ?? []) as SectionBlock[]
+  const template = page.template as string | undefined
 
+  // Service template - render service page layout
+  if (template === "service") {
+    const parent = page.parent as { id?: number; title?: string; pathname?: string } | null
+
+    // Fetch sibling services (other children of the same parent)
+    let siblingServices: Array<{
+      id: number | string
+      title: string
+      pathname: string
+      icon?: string | null
+      description?: string | null
+    }> = []
+
+    if (parent?.id) {
+      const siblings = await getChildPagesByParentId(
+        parent.id,
+        ENABLE_LOCALIZATION ? (locale as Locale) : undefined
+      )
+      siblingServices = siblings.map((s) => ({
+        id: s.id,
+        title: s.title,
+        pathname: s.pathname,
+        icon: (s.serviceData as { icon?: string })?.icon ?? null,
+        description: (s.serviceData as { description?: string })?.description ?? null,
+      }))
+    }
+
+    return (
+      <main>
+        <ServicePage
+          page={{
+            title: page.title as string,
+            parentTitle: parent?.title,
+            parentPathname: parent?.pathname,
+            serviceData: page.serviceData as ServicePageData["serviceData"],
+          }}
+          siblingServices={siblingServices}
+        >
+          {sections.length > 0 && (
+            <BlockRenderer
+              blocks={sections}
+              siteSettings={siteSettings as Record<string, unknown> | null}
+              submitAction={submitFormAction}
+            />
+          )}
+        </ServicePage>
+      </main>
+    )
+  }
+
+  // Default rendering
   return (
     <main>
       {sections.length === 0 ? (
@@ -77,7 +131,11 @@ export default async function Page({ params }: PageProps) {
           </p>
         </div>
       ) : (
-        <BlockRenderer blocks={sections} />
+        <BlockRenderer
+          blocks={sections}
+          siteSettings={siteSettings as Record<string, unknown> | null}
+          submitAction={submitFormAction}
+        />
       )}
     </main>
   )

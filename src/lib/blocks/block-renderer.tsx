@@ -9,13 +9,13 @@ import {
   BlockRenderer as BaseBlockRenderer,
   blockRegistry,
 } from "@webko-labs/ui"
-import type { GenericBlock, BlockComponentProps } from "@webko-labs/ui"
+import type { GenericBlock, BlockComponentProps, FormHelpers } from "@webko-labs/ui"
 
 // Re-export types for convenience
-export type { GenericBlock, BlockComponentProps }
+export type { GenericBlock, BlockComponentProps, FormHelpers }
 export type SectionBlock = GenericBlock
 
-interface BlockRendererProps {
+interface BlockRendererProps extends FormHelpers {
   blocks: GenericBlock[]
   validationMessages?: Record<string, string>
   siteSettings?: Record<string, unknown> | null
@@ -35,7 +35,13 @@ interface BlockRendererProps {
  * }
  * ```
  */
-export function BlockRenderer({ blocks, validationMessages, siteSettings, validateBlocks }: BlockRendererProps) {
+export function BlockRenderer({
+  blocks,
+  validationMessages,
+  siteSettings,
+  validateBlocks,
+  submitAction,
+}: BlockRendererProps) {
   return (
     <BaseBlockRenderer
       blocks={blocks}
@@ -43,6 +49,7 @@ export function BlockRenderer({ blocks, validationMessages, siteSettings, valida
       siteSettings={siteSettings}
       validateBlocks={validateBlocks}
       blockRegistry={blockRegistry}
+      submitAction={submitAction}
     />
   )
 }
