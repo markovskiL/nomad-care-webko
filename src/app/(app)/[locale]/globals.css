@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 /* Include @webko-labs/ui classes */
 @source "../../../../node_modules/@webko-labs/ui/dist";
