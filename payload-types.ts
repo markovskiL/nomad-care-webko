@@ -1014,6 +1014,7 @@ export interface Page {
   };
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Hero banner content for the homepage
@@ -1866,6 +1867,7 @@ export interface PagesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2204,6 +2206,10 @@ export interface Navigation {
      * Site logo (replaces text brand when set)
      */
     logo?: (number | null) | Media;
+    /**
+     * Link URL when clicking the logo (default: /)
+     */
+    logoHref?: string | null;
     /**
      * Brand name (shown when no logo is set)
      */
@@ -2668,6 +2674,7 @@ export interface NavigationSelect<T extends boolean = true> {
     | T
     | {
         logo?: T;
+        logoHref?: T;
         name?: T;
         tagline?: T;
       };
