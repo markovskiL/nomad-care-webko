@@ -33,8 +33,8 @@ importers:
         specifier: ^0.1.4
         version: 0.1.4(@faceless-ui/modal@3.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@faceless-ui/scroll-info@2.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@payloadcms/next@3.68.2(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.0.9)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3))(@types/pg@8.16.0)(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.0.9)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)(yjs@13.6.27)
       '@webko-labs/ui':
-        specifier: ^0.1.4
-        version: 0.1.4(e49c7e8b6a16268adf791633d7038aab)
+        specifier: ^0.1.5
+        version: 0.1.5(e49c7e8b6a16268adf791633d7038aab)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -2546,8 +2546,8 @@ packages:
       payload: 3.68.2
       react: ^18 || ^19
 
-  '@webko-labs/ui@0.1.4':
-    resolution: {integrity: sha512-e38auqCVTYrVyGlo2LgzrTn60rm6oVZd+xL6FStREXeW9Cm647xCaksi0pQLST4eacY76hDdWN/IbU3LRKvq5A==, tarball: https://npm.pkg.github.com/download/@webko-labs/ui/0.1.4/d4831bde0859f4760b6ad94850179ae78c36548d}
+  '@webko-labs/ui@0.1.5':
+    resolution: {integrity: sha512-OiOIEWjIMrm1I81Wh2pNBPL17XGyvshMv7hD+uM8BoAmmwrau797hJKk9F31SH34OidYwp7W4YGy2qr3+6/AMw==, tarball: https://npm.pkg.github.com/download/@webko-labs/ui/0.1.5/53db62213d117202cf761a763346856feddf0454}
     peerDependencies:
       '@hookform/resolvers': ^3.0.0
       '@payloadcms/richtext-lexical': 3.68.2
@@ -7767,7 +7767,7 @@ snapshots:
       - typescript
       - yjs
 
-  '@webko-labs/ui@0.1.4(e49c7e8b6a16268adf791633d7038aab)':
+  '@webko-labs/ui@0.1.5(e49c7e8b6a16268adf791633d7038aab)':
     dependencies:
       '@hookform/resolvers': 3.10.0(react-hook-form@7.68.0(react@19.2.1))
       '@payloadcms/richtext-lexical': 3.68.2(@faceless-ui/modal@3.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@faceless-ui/scroll-info@2.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@payloadcms/next@3.68.2(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.0.9)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3))(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.0.9)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)(yjs@13.6.27)
