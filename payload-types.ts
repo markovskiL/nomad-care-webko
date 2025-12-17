@@ -104,7 +104,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'bg') | ('en' | 'bg')[];
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'bg' | 'mk') | ('en' | 'bg' | 'mk')[];
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
@@ -119,7 +119,7 @@ export interface Config {
     'ui-strings': UiStringsSelect<false> | UiStringsSelect<true>;
     languages: LanguagesSelect<false> | LanguagesSelect<true>;
   };
-  locale: 'en' | 'bg';
+  locale: 'en' | 'bg' | 'mk';
   user: User & {
     collection: 'users';
   };

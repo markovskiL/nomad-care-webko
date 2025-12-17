@@ -1,14 +1,17 @@
+// AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
+// Generated from Payload CMS Languages global
+// To update: modify languages in Payload admin, then rebuild the site
+
 import { createI18nConfig } from "@webko-labs/i18n"
 
-export const i18nConfig = createI18nConfig(
-{
+export const i18nConfig = createI18nConfig({
   enabled: true,
-  locales: ["en", "bg"] as const,
+  locales: ["en","bg","mk"] as const,
   defaultLocale: "bg",
-  localeLabels: 
-  {
-    en: "English",
-    bg: "Български",
+  localeLabels: {
+      "en": "🇬🇧 English",
+      "bg": "🇧🇬 Български",
+      "mk": "Macedonian"
   },
 })
 

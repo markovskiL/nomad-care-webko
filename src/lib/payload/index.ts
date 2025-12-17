@@ -9,3 +9,9 @@ export {
 export { getPagesForNavigation, getPagesForNavigationTree } from "./get-pages-for-nav"
 export { getSiteSettings, type SiteSettingsData } from "./get-site-settings"
 export { getLanguages, type LanguagesData, type LanguageConfig } from "./get-languages"
+export {
+  resolveHref,
+  resolveNavLinks,
+  resolveNavItemsWithChildren,
+  resolveSpecialLinks,
+} from "./resolve-links"
