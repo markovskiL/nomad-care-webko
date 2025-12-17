@@ -110,12 +110,14 @@ export interface Config {
     navigation: Navigation;
     footer: Footer;
     'ui-strings': UiString;
+    languages: Language;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'ui-strings': UiStringsSelect<false> | UiStringsSelect<true>;
+    languages: LanguagesSelect<false> | LanguagesSelect<true>;
   };
   locale: 'en' | 'bg';
   user: User & {
@@ -2607,6 +2609,39 @@ export interface UiString {
   createdAt?: string | null;
 }
 /**
+ * Configure which languages are available on the site
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "languages".
+ */
+export interface Language {
+  id: number;
+  /**
+   * Languages shown in the language switcher. At least one language must be enabled.
+   */
+  languages: {
+    /**
+     * Select a language
+     */
+    code: 'en' | 'mk' | 'bg' | 'de' | 'fr' | 'es' | 'it' | 'ru' | 'tr' | 'el' | 'ro';
+    /**
+     * Label shown in the language switcher (e.g., '🇬🇧 English')
+     */
+    label: string;
+    /**
+     * Show this language in the language switcher
+     */
+    enabled?: boolean | null;
+    id?: string | null;
+  }[];
+  /**
+   * The default language when no preference is set
+   */
+  defaultLanguage: 'en' | 'mk' | 'bg' | 'de' | 'fr' | 'es' | 'it' | 'ru' | 'tr' | 'el' | 'ro';
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
@@ -2943,6 +2978,24 @@ export interface UiStringsSelect<T extends boolean = true> {
         relatedServices?: T;
         learnMore?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "languages_select".
+ */
+export interface LanguagesSelect<T extends boolean = true> {
+  languages?:
+    | T
+    | {
+        code?: T;
+        label?: T;
+        enabled?: T;
+        id?: T;
+      };
+  defaultLanguage?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

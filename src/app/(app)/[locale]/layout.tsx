@@ -10,6 +10,8 @@ import { getFooter } from "@/lib/payload/get-footer"
 import { getPagesForNavigation } from "@/lib/payload/get-pages-for-nav"
 import { getChildPagesByParentId } from "@/lib/payload/get-page"
 import { getPagesForFooter } from "@/lib/payload/get-pages-for-footer"
+import { getLanguages } from "@/lib/payload/get-languages"
+
 import "./globals.css"
 
 export function generateStaticParams() {
@@ -35,13 +37,15 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   // Get messages for client components
   const messages = await getMessages()
 
-  // Fetch navigation, footer, and theme data
-  const [navigation, footer, navPages, footerPages, theme] = await Promise.all([
+  // Fetch navigation, footer, theme, and languages data
+  const [navigation, footer, navPages, footerPages, theme, languagesData] = await Promise.all(
+  [
     getNavigation(locale),
     getFooter(locale),
     getPagesForNavigation(locale),
     getPagesForFooter(locale),
     getTheme(),
+    getLanguages(),
   ])
 
   // Build page dropdown children from navigation config
@@ -79,7 +83,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
       </head>
       <body className="antialiased">
         <NextIntlClientProvider messages={messages}>
-          <Navigation data={navigation} pageLinks={navPages} pageDropdownChildren={pageDropdownChildren} />
+          <Navigation data={navigation} pageLinks={navPages} pageDropdownChildren={pageDropdownChildren} languages={languagesData.languages} />
           {children}
           <Footer data={footer} pageLinks={footerPages} />
         </NextIntlClientProvider>

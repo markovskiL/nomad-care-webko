@@ -1,10 +1,12 @@
 import { createI18nConfig } from "@webko-labs/i18n"
 
-export const i18nConfig = createI18nConfig({
+export const i18nConfig = createI18nConfig(
+{
   enabled: true,
   locales: ["en", "bg"] as const,
-  defaultLocale: "en",
-  localeLabels: {
+  defaultLocale: "bg",
+  localeLabels: 
+  {
     en: "English",
     bg: "Български",
   },
