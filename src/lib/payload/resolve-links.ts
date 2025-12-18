@@ -133,13 +133,8 @@ export function resolveNavLinks<T extends { href?: string | null }>(
  *    -> Adds computed `href` property
  * 2. Pathname strings: fields named "pathname" (from page objects)
  *    -> Adds locale prefix to internal paths
- *
- * Skips processing for default locale (no changes needed).
  */
 export function resolveAllHrefs<T>(data: T, locale: string): T {
-  // Skip for default locale - no prefix needed, avoid unnecessary cloning
-  if (locale === i18nConfig.defaultLocale) return data
-
   if (!data || typeof data !== "object") return data
 
   if (Array.isArray(data)) {
