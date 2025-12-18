@@ -7,6 +7,10 @@ import { ENABLE_LOCALIZATION, type Locale } from "@/lib/i18n/config"
 import { BlockRenderer, type SectionBlock } from "@/lib/blocks"
 import { ServicePage, type ServicePageData } from "@webko-labs/ui"
 import { submitFormAction } from "@/lib/forms"
+import { resolveHref, resolveAllHrefs } from "@/lib/payload/resolve-links"
+
+// Note: resolveHref is still needed for parent.pathname (not resolved by data layer)
+// resolveAllHrefs is needed for dynamic page sections/blocks
 
 export const revalidate = 60
 
@@ -66,8 +70,8 @@ export default async function Page({ params }: PageProps) {
     notFound()
   }
 
-  // Cast sections to SectionBlock array
-  const sections = (page.sections ?? []) as SectionBlock[]
+  // Resolve all hrefs in sections and cast to SectionBlock array
+  const sections = resolveAllHrefs(page.sections ?? [], locale) as SectionBlock[]
   const template = page.template as string | undefined
 
   // Service template - render service page layout
@@ -84,6 +88,7 @@ export default async function Page({ params }: PageProps) {
     }> = []
 
     if (parent?.id) {
+      // Pathnames already resolved by getChildPagesByParentId
       const siblings = await getChildPagesByParentId(
         parent.id,
         ENABLE_LOCALIZATION ? (locale as Locale) : undefined
@@ -103,7 +108,7 @@ export default async function Page({ params }: PageProps) {
           page={{
             title: page.title as string,
             parentTitle: parent?.title,
-            parentPathname: parent?.pathname,
+            parentPathname: parent?.pathname ? resolveHref(parent.pathname, locale) : undefined,
             serviceData: page.serviceData as ServicePageData["serviceData"],
           }}
           siblingServices={siblingServices}

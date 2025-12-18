@@ -1,4 +1,6 @@
 import { getPayloadClient } from "./get-payload"
+import { resolveNavLinks } from "./resolve-links"
+import type { PayloadLocale } from "@/lib/i18n"
 
 export interface NavPageItem {
   id: string | number
@@ -23,12 +25,12 @@ export async function getPagesForNavigation(locale?: string): Promise<NavPageIte
           equals: true,
         },
       },
-      locale: locale as "en" | "bg" | "all" | undefined,
+      locale: locale as PayloadLocale,
       limit: 100,
       depth: 1, // Populate parent relationship
     })
 
-    return pages.docs
+    const navPages = pages.docs
       .map((page) => {
         const parentId = typeof page.parent === "number"
           ? page.parent
@@ -43,6 +45,9 @@ export async function getPagesForNavigation(locale?: string): Promise<NavPageIte
         }
       })
       .sort((a, b) => a.order - b.order)
+
+    // Resolve hrefs with locale prefix
+    return locale ? resolveNavLinks(navPages, locale) : navPages
   } catch {
     return []
   }

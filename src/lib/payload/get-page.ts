@@ -1,4 +1,6 @@
 import { getPayloadClient } from "./get-payload"
+import { resolveHref } from "./resolve-links"
+import type { PayloadLocale } from "@/lib/i18n"
 
 export interface BreadcrumbItem {
   title: string
@@ -18,7 +20,7 @@ export async function getPageByPathname(pathname: string, locale?: string) {
     where: {
       pathname: { equals: pathname },
     },
-    locale: locale as "en" | "bg" | "all" | undefined,
+    locale: locale as PayloadLocale,
     limit: 1,
     depth: 3,
   })
@@ -40,7 +42,7 @@ export async function getPageWithBreadcrumbs(
     where: {
       pathname: { equals: pathname },
     },
-    locale: locale as "en" | "bg" | "all" | undefined,
+    locale: locale as PayloadLocale,
     limit: 1,
     depth: 3,
   })
@@ -67,7 +69,7 @@ export async function getPageWithBreadcrumbs(
       const parentDoc = await payload.findByID({
         collection: "pages",
         id: parentId,
-        locale: locale as "en" | "bg" | "all" | undefined,
+        locale: locale as PayloadLocale,
         depth: 0,
       })
       current = parentDoc as typeof page
@@ -100,7 +102,7 @@ export async function getChildPages(parentPathname: string, locale?: string) {
   const children = await payload.find({
     collection: "pages",
     where: { parent: { equals: parent.id } },
-    locale: locale as "en" | "bg" | "all" | undefined,
+    locale: locale as PayloadLocale,
     limit: 100,
     sort: "visibility.navigationOrder",
   })
@@ -110,6 +112,7 @@ export async function getChildPages(parentPathname: string, locale?: string) {
 
 /**
  * Gets child pages by parent ID.
+ * Returns pages with pathnames resolved for the given locale.
  */
 export async function getChildPagesByParentId(parentId: number, locale?: string) {
   const payload = await getPayloadClient()
@@ -117,12 +120,18 @@ export async function getChildPagesByParentId(parentId: number, locale?: string)
   const children = await payload.find({
     collection: "pages",
     where: { parent: { equals: parentId } },
-    locale: locale as "en" | "bg" | "all" | undefined,
+    locale: locale as PayloadLocale,
     limit: 100,
     sort: "visibility.navigationOrder",
   })
 
-  return children.docs
+  // Resolve pathnames with locale prefix
+  if (!locale) return children.docs
+
+  return children.docs.map((page) => ({
+    ...page,
+    pathname: resolveHref(page.pathname, locale),
+  })) as typeof children.docs
 }
 
 export async function getAllPages(locale?: string) {
@@ -130,8 +139,11 @@ export async function getAllPages(locale?: string) {
 
   const pages = await payload.find({
     collection: "pages",
-    locale: locale as "en" | "bg" | "all" | undefined,
+    locale: locale as PayloadLocale,
     limit: 100,
+    select: {
+      pathname: true,
+    },
   })
 
   return pages.docs

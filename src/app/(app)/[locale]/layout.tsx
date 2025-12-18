@@ -11,7 +11,6 @@ import { getPagesForNavigation } from "@/lib/payload/get-pages-for-nav"
 import { getChildPagesByParentId } from "@/lib/payload/get-page"
 import { getPagesForFooter } from "@/lib/payload/get-pages-for-footer"
 import { getLanguages } from "@/lib/payload/get-languages"
-import { resolveHref, resolveNavLinks } from "@/lib/payload/resolve-links"
 
 import "./globals.css"
 
@@ -38,9 +37,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   // Get messages for client components
   const messages = await getMessages()
 
-  // Fetch navigation, footer, theme, and languages data
-  const [navigation, footer, navPagesRaw, footerPagesRaw, theme, languagesData] = await Promise.all(
-  [
+  // Fetch navigation, footer, theme, and languages data (hrefs already resolved)
+  const [navigation, footer, navPages, footerPages, theme, languagesData] = await Promise.all([
     getNavigation(locale),
     getFooter(locale),
     getPagesForNavigation(locale),
@@ -48,14 +46,6 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     getTheme(),
     getLanguages(),
   ])
-
-  // Resolve all links with locale prefix
-  const navPages = resolveNavLinks(navPagesRaw, locale)
-  const footerPages = {
-    company: resolveNavLinks(footerPagesRaw.company, locale),
-    services: resolveNavLinks(footerPagesRaw.services, locale),
-    support: resolveNavLinks(footerPagesRaw.support, locale),
-  }
 
   // Build page dropdown children from navigation config
   const pageDropdownChildren: Record<string | number, NavItemChild[]> = {}
@@ -66,6 +56,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         const parentPage = dropdown.parentPage
         if (!parentPage || typeof parentPage === "number") return
 
+        // Pathnames already resolved by getChildPagesByParentId
         const children = await getChildPagesByParentId(parentPage.id as number, locale)
         pageDropdownChildren[parentPage.id] = children.map((child) => {
           const serviceData = child.serviceData as {
@@ -75,7 +66,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
 
           return {
             label: child.title,
-            href: resolveHref(child.pathname, locale),
+            href: child.pathname,
             description: serviceData?.description ?? null,
             icon: serviceData?.icon ?? null,
           }

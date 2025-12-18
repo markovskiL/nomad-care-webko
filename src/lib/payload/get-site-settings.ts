@@ -1,4 +1,5 @@
 import { getPayloadClient } from "./get-payload"
+import type { PayloadLocale } from "@/lib/i18n"
 
 export interface SiteSettingsData {
   siteName?: string | null
@@ -39,7 +40,7 @@ export async function getSiteSettings(locale?: string): Promise<SiteSettingsData
     const payload = await getPayloadClient()
     const settings = await payload.findGlobal({
       slug: "site-settings",
-      locale: locale as "en" | "bg" | "all" | undefined,
+      locale: locale as PayloadLocale,
       depth: 1,
     })
     return settings as SiteSettingsData

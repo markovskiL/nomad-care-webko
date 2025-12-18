@@ -1,4 +1,6 @@
 import { getPayloadClient } from "./get-payload"
+import { resolveNavLinks } from "./resolve-links"
+import type { PayloadLocale } from "@/lib/i18n"
 
 export interface FooterPageLink {
   label: string
@@ -22,7 +24,7 @@ export async function getPagesForFooter(locale?: string): Promise<FooterLinkGrou
           equals: true,
         },
       },
-      locale: locale as "en" | "bg" | "all" | undefined,
+      locale: locale as PayloadLocale,
       limit: 100,
     })
 
@@ -50,7 +52,14 @@ export async function getPagesForFooter(locale?: string): Promise<FooterLinkGrou
     groups.services.sort((a, b) => a.order - b.order)
     groups.support.sort((a, b) => a.order - b.order)
 
-    return groups
+    // Resolve hrefs with locale prefix
+    if (!locale) return groups
+
+    return {
+      company: resolveNavLinks(groups.company, locale),
+      services: resolveNavLinks(groups.services, locale),
+      support: resolveNavLinks(groups.support, locale),
+    }
   } catch {
     return { company: [], services: [], support: [] }
   }

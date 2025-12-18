@@ -7,6 +7,7 @@
  * Run: pnpm prebuild (runs automatically before pnpm build)
  */
 
+// @ts-ignore - dotenv is available in target sites
 import "dotenv/config"
 import { getPayload } from "payload"
 import config from "@payload-config"
@@ -35,26 +36,37 @@ async function generateI18nConfig() {
       depth: 0,
     })) as LanguagesGlobal
 
-    // Get enabled languages
-    const enabledLanguages = data.languages?.filter((lang) => lang.enabled) ?? []
+    // Get ALL languages (for Payload CMS - keeps content accessible)
+    const allLanguages = data.languages ?? []
+    // Get ENABLED languages (for frontend - language switcher and routing)
+    const enabledLanguages = allLanguages.filter((lang) => lang.enabled)
 
-    if (enabledLanguages.length === 0) {
-      console.log("No enabled languages found, using defaults")
-      enabledLanguages.push({ code: "en", label: "English", enabled: true })
+    if (allLanguages.length === 0) {
+      console.log("No languages found, using defaults")
+      allLanguages.push({ code: "en", label: "English", enabled: true })
     }
 
-    const locales = enabledLanguages.map((lang) => lang.code)
+    if (enabledLanguages.length === 0) {
+      console.log("No enabled languages found, using first language as enabled")
+      enabledLanguages.push(allLanguages[0])
+    }
+
+    // All locales for Payload (includes disabled)
+    const locales = allLanguages.map((lang) => lang.code)
+    // Enabled locales for frontend (only enabled)
+    const enabledLocales = enabledLanguages.map((lang) => lang.code)
+
     let defaultLocale = data.defaultLanguage ?? "en"
 
     // Ensure default locale is in the enabled list
-    if (!locales.includes(defaultLocale)) {
+    if (!enabledLocales.includes(defaultLocale)) {
       console.log(`Default locale "${defaultLocale}" not in enabled list, using first enabled locale`)
-      defaultLocale = locales[0]
+      defaultLocale = enabledLocales[0]
     }
 
-    // Build locale labels object
+    // Build locale labels object for ALL languages
     const localeLabels: Record<string, string> = {}
-    for (const lang of enabledLanguages) {
+    for (const lang of allLanguages) {
       localeLabels[lang.code] = lang.label
     }
 
@@ -68,11 +80,15 @@ import { createI18nConfig } from "@webko-labs/i18n"
 export const i18nConfig = createI18nConfig({
   enabled: true,
   locales: ${JSON.stringify(locales)} as const,
+  enabledLocales: ${JSON.stringify(enabledLocales)} as const,
   defaultLocale: "${defaultLocale}",
   localeLabels: ${JSON.stringify(localeLabels, null, 4).replace(/\n/g, "\n  ")},
 })
 
 export type Locale = (typeof i18nConfig.locales)[number]
+export type EnabledLocale = (typeof i18nConfig.enabledLocales)[number]
+/** Locale type for Payload API calls (includes "all" for fetching all locales) */
+export type PayloadLocale = Locale | "all" | undefined
 export const ENABLE_LOCALIZATION = i18nConfig.enabled
 `
 
@@ -80,7 +96,8 @@ export const ENABLE_LOCALIZATION = i18nConfig.enabled
     fs.writeFileSync(outputPath, content, "utf-8")
 
     console.log(`Generated i18n config:`)
-    console.log(`  Locales: ${locales.join(", ")}`)
+    console.log(`  All locales: ${locales.join(", ")}`)
+    console.log(`  Enabled locales: ${enabledLocales.join(", ")}`)
     console.log(`  Default: ${defaultLocale}`)
     console.log(`  Output: ${outputPath}`)
 

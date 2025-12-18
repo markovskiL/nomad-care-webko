@@ -11,7 +11,9 @@ export { getSiteSettings, type SiteSettingsData } from "./get-site-settings"
 export { getLanguages, type LanguagesData, type LanguageConfig } from "./get-languages"
 export {
   resolveHref,
+  resolveLink,
   resolveNavLinks,
-  resolveNavItemsWithChildren,
-  resolveSpecialLinks,
+  resolveAllHrefs,
+  type PayloadLink,
+  type ResolvedLink,
 } from "./resolve-links"

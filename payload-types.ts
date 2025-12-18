@@ -104,7 +104,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'bg' | 'mk') | ('en' | 'bg' | 'mk')[];
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'bg') | ('en' | 'bg')[];
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
@@ -119,7 +119,7 @@ export interface Config {
     'ui-strings': UiStringsSelect<false> | UiStringsSelect<true>;
     languages: LanguagesSelect<false> | LanguagesSelect<true>;
   };
-  locale: 'en' | 'bg' | 'mk';
+  locale: 'en' | 'bg';
   user: User & {
     collection: 'users';
   };
@@ -634,10 +634,28 @@ export interface Page {
                * Button label
                */
               buttonText?: string | null;
-              /**
-               * Button link
-               */
-              buttonHref?: string | null;
+              buttonLink?: {
+                /**
+                 * Link type
+                 */
+                type: 'internal' | 'external' | 'anchor';
+                /**
+                 * Select a page to link to
+                 */
+                page?: (number | null) | Page;
+                /**
+                 * Full URL (e.g., https://example.com)
+                 */
+                url?: string | null;
+                /**
+                 * Anchor (e.g., #contact or contact)
+                 */
+                anchor?: string | null;
+                /**
+                 * Open in new tab
+                 */
+                newTab?: boolean | null;
+              };
             };
             id?: string | null;
             blockName?: string | null;
@@ -695,7 +713,28 @@ export interface Page {
                       }[]
                     | null;
                   ctaLabel?: string | null;
-                  ctaHref?: string | null;
+                  ctaLink: {
+                    /**
+                     * Link type
+                     */
+                    type: 'internal' | 'external' | 'anchor';
+                    /**
+                     * Select a page to link to
+                     */
+                    page?: (number | null) | Page;
+                    /**
+                     * Full URL (e.g., https://example.com)
+                     */
+                    url?: string | null;
+                    /**
+                     * Anchor (e.g., #contact or contact)
+                     */
+                    anchor?: string | null;
+                    /**
+                     * Open in new tab
+                     */
+                    newTab?: boolean | null;
+                  };
                   id?: string | null;
                 }[]
               | null;
@@ -806,10 +845,28 @@ export interface Page {
                * Button label
                */
               buttonText?: string | null;
-              /**
-               * Button link
-               */
-              buttonHref?: string | null;
+              buttonLink?: {
+                /**
+                 * Link type
+                 */
+                type: 'internal' | 'external' | 'anchor';
+                /**
+                 * Select a page to link to
+                 */
+                page?: (number | null) | Page;
+                /**
+                 * Full URL (e.g., https://example.com)
+                 */
+                url?: string | null;
+                /**
+                 * Anchor (e.g., #contact or contact)
+                 */
+                anchor?: string | null;
+                /**
+                 * Open in new tab
+                 */
+                newTab?: boolean | null;
+              };
             };
             id?: string | null;
             blockName?: string | null;
@@ -1045,11 +1102,53 @@ export interface Hero {
   subheadline: string;
   primaryCta: {
     label: string;
-    href: string;
+    link: {
+      /**
+       * Link type
+       */
+      type: 'internal' | 'external' | 'anchor';
+      /**
+       * Select a page to link to
+       */
+      page?: (number | null) | Page;
+      /**
+       * Full URL (e.g., https://example.com)
+       */
+      url?: string | null;
+      /**
+       * Anchor (e.g., #contact or contact)
+       */
+      anchor?: string | null;
+      /**
+       * Open in new tab
+       */
+      newTab?: boolean | null;
+    };
   };
   secondaryCta: {
     label: string;
-    href: string;
+    link: {
+      /**
+       * Link type
+       */
+      type: 'internal' | 'external' | 'anchor';
+      /**
+       * Select a page to link to
+       */
+      page?: (number | null) | Page;
+      /**
+       * Full URL (e.g., https://example.com)
+       */
+      url?: string | null;
+      /**
+       * Anchor (e.g., #contact or contact)
+       */
+      anchor?: string | null;
+      /**
+       * Open in new tab
+       */
+      newTab?: boolean | null;
+    };
   };
   image: number | Media;
   trustBadges?:
@@ -1089,10 +1188,28 @@ export interface ValuesSection {
    * CTA button text
    */
   ctaLabel?: string | null;
-  /**
-   * CTA button link
-   */
-  ctaHref?: string | null;
+  ctaLink: {
+    /**
+     * Link type
+     */
+    type: 'internal' | 'external' | 'anchor';
+    /**
+     * Select a page to link to
+     */
+    page?: (number | null) | Page;
+    /**
+     * Full URL (e.g., https://example.com)
+     */
+    url?: string | null;
+    /**
+     * Anchor (e.g., #contact or contact)
+     */
+    anchor?: string | null;
+    /**
+     * Open in new tab
+     */
+    newTab?: boolean | null;
+  };
   /**
    * Image (used in 'With Image' variant)
    */
@@ -1348,7 +1465,28 @@ export interface CtaBanner {
   headingWhite?: string | null;
   headingTeal?: string | null;
   buttonText?: string | null;
-  buttonHref?: string | null;
+  buttonLink: {
+    /**
+     * Link type
+     */
+    type: 'internal' | 'external' | 'anchor';
+    /**
+     * Select a page to link to
+     */
+    page?: (number | null) | Page;
+    /**
+     * Full URL (e.g., https://example.com)
+     */
+    url?: string | null;
+    /**
+     * Anchor (e.g., #contact or contact)
+     */
+    anchor?: string | null;
+    /**
+     * Open in new tab
+     */
+    newTab?: boolean | null;
+  };
   /**
    * Recommended: 1920x600px or larger for parallax effect
    */
@@ -1716,7 +1854,15 @@ export interface PagesSelect<T extends boolean = true> {
                     show?: T;
                     text?: T;
                     buttonText?: T;
-                    buttonHref?: T;
+                    buttonLink?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          anchor?: T;
+                          newTab?: T;
+                        };
                   };
               id?: T;
               blockName?: T;
@@ -1743,7 +1889,15 @@ export interface PagesSelect<T extends boolean = true> {
                           id?: T;
                         };
                     ctaLabel?: T;
-                    ctaHref?: T;
+                    ctaLink?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          anchor?: T;
+                          newTab?: T;
+                        };
                     id?: T;
                   };
               id?: T;
@@ -1789,7 +1943,15 @@ export interface PagesSelect<T extends boolean = true> {
                     show?: T;
                     text?: T;
                     buttonText?: T;
-                    buttonHref?: T;
+                    buttonLink?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          anchor?: T;
+                          newTab?: T;
+                        };
                   };
               id?: T;
               blockName?: T;
@@ -1976,13 +2138,29 @@ export interface HeroSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
-        href?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
       };
   secondaryCta?:
     | T
     | {
         label?: T;
-        href?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
       };
   image?: T;
   trustBadges?:
@@ -2011,7 +2189,15 @@ export interface CtaBannersSelect<T extends boolean = true> {
   headingWhite?: T;
   headingTeal?: T;
   buttonText?: T;
-  buttonHref?: T;
+  buttonLink?:
+    | T
+    | {
+        type?: T;
+        page?: T;
+        url?: T;
+        anchor?: T;
+        newTab?: T;
+      };
   backgroundImage?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2026,7 +2212,15 @@ export interface ValuesSectionsSelect<T extends boolean = true> {
   heading?: T;
   description?: T;
   ctaLabel?: T;
-  ctaHref?: T;
+  ctaLink?:
+    | T
+    | {
+        type?: T;
+        page?: T;
+        url?: T;
+        anchor?: T;
+        newTab?: T;
+      };
   image?: T;
   values?:
     | T
@@ -2203,15 +2397,36 @@ export interface Navigation {
   /**
    * Brand/Logo settings
    */
-  brand?: {
+  brand: {
     /**
      * Site logo (replaces text brand when set)
      */
     logo?: (number | null) | Media;
     /**
-     * Link URL when clicking the logo (default: /)
+     * Link when clicking the logo (default: home page)
      */
-    logoHref?: string | null;
+    logoLink: {
+      /**
+       * Link type
+       */
+      type: 'internal' | 'external' | 'anchor';
+      /**
+       * Select a page to link to
+       */
+      page?: (number | null) | Page;
+      /**
+       * Full URL (e.g., https://example.com)
+       */
+      url?: string | null;
+      /**
+       * Anchor (e.g., #contact or contact)
+       */
+      anchor?: string | null;
+      /**
+       * Open in new tab
+       */
+      newTab?: boolean | null;
+    };
     /**
      * Brand name (shown when no logo is set)
      */
@@ -2346,10 +2561,28 @@ export interface Navigation {
   specialLinks?:
     | {
         label: string;
-        /**
-         * URL (e.g., #contact, https://external.com)
-         */
-        href: string;
+        link: {
+          /**
+           * Link type
+           */
+          type: 'internal' | 'external' | 'anchor';
+          /**
+           * Select a page to link to
+           */
+          page?: (number | null) | Page;
+          /**
+           * Full URL (e.g., https://example.com)
+           */
+          url?: string | null;
+          /**
+           * Anchor (e.g., #contact or contact)
+           */
+          anchor?: string | null;
+          /**
+           * Open in new tab
+           */
+          newTab?: boolean | null;
+        };
         /**
          * Position in navigation (lower = earlier)
          */
@@ -2363,7 +2596,28 @@ export interface Navigation {
   cta?: {
     show?: boolean | null;
     label?: string | null;
-    href?: string | null;
+    link?: {
+      /**
+       * Link type
+       */
+      type: 'internal' | 'external' | 'anchor';
+      /**
+       * Select a page to link to
+       */
+      page?: (number | null) | Page;
+      /**
+       * Full URL (e.g., https://example.com)
+       */
+      url?: string | null;
+      /**
+       * Anchor (e.g., #contact or contact)
+       */
+      anchor?: string | null;
+      /**
+       * Open in new tab
+       */
+      newTab?: boolean | null;
+    };
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -2397,7 +2651,28 @@ export interface Footer {
         links?:
           | {
               label: string;
-              href: string;
+              link: {
+                /**
+                 * Link type
+                 */
+                type: 'internal' | 'external' | 'anchor';
+                /**
+                 * Select a page to link to
+                 */
+                page?: (number | null) | Page;
+                /**
+                 * Full URL (e.g., https://example.com)
+                 */
+                url?: string | null;
+                /**
+                 * Anchor (e.g., #contact or contact)
+                 */
+                anchor?: string | null;
+                /**
+                 * Open in new tab
+                 */
+                newTab?: boolean | null;
+              };
               id?: string | null;
             }[]
           | null;
@@ -2449,10 +2724,28 @@ export interface Footer {
      * Button text
      */
     text?: string | null;
-    /**
-     * Button link
-     */
-    href?: string | null;
+    link?: {
+      /**
+       * Link type
+       */
+      type: 'internal' | 'external' | 'anchor';
+      /**
+       * Select a page to link to
+       */
+      page?: (number | null) | Page;
+      /**
+       * Full URL (e.g., https://example.com)
+       */
+      url?: string | null;
+      /**
+       * Anchor (e.g., #contact or contact)
+       */
+      anchor?: string | null;
+      /**
+       * Open in new tab
+       */
+      newTab?: boolean | null;
+    };
   };
   /**
    * Copyright text (year is added automatically)
@@ -2464,7 +2757,28 @@ export interface Footer {
   bottomLinks?:
     | {
         label: string;
-        href: string;
+        link: {
+          /**
+           * Link type
+           */
+          type: 'internal' | 'external' | 'anchor';
+          /**
+           * Select a page to link to
+           */
+          page?: (number | null) | Page;
+          /**
+           * Full URL (e.g., https://example.com)
+           */
+          url?: string | null;
+          /**
+           * Anchor (e.g., #contact or contact)
+           */
+          anchor?: string | null;
+          /**
+           * Open in new tab
+           */
+          newTab?: boolean | null;
+        };
         id?: string | null;
       }[]
     | null;
@@ -2609,7 +2923,7 @@ export interface UiString {
   createdAt?: string | null;
 }
 /**
- * Configure which languages are available on the site
+ * Configure which languages are available on the site. Changes require a site rebuild to take effect.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "languages".
@@ -2623,7 +2937,7 @@ export interface Language {
     /**
      * Select a language
      */
-    code: 'en' | 'mk' | 'bg' | 'de' | 'fr' | 'es' | 'it' | 'ru' | 'tr' | 'el' | 'ro';
+    code: 'en' | 'mk' | 'bg';
     /**
      * Label shown in the language switcher (e.g., '🇬🇧 English')
      */
@@ -2635,9 +2949,9 @@ export interface Language {
     id?: string | null;
   }[];
   /**
-   * The default language when no preference is set
+   * The default language when no preference is set. Requires site rebuild to take effect.
    */
-  defaultLanguage: 'en' | 'mk' | 'bg' | 'de' | 'fr' | 'es' | 'it' | 'ru' | 'tr' | 'el' | 'ro';
+  defaultLanguage: 'en' | 'mk' | 'bg';
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2709,7 +3023,15 @@ export interface NavigationSelect<T extends boolean = true> {
     | T
     | {
         logo?: T;
-        logoHref?: T;
+        logoLink?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
         name?: T;
         tagline?: T;
       };
@@ -2758,7 +3080,15 @@ export interface NavigationSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
-        href?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
         order?: T;
         id?: T;
       };
@@ -2767,7 +3097,15 @@ export interface NavigationSelect<T extends boolean = true> {
     | {
         show?: T;
         label?: T;
-        href?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;
@@ -2794,7 +3132,15 @@ export interface FooterSelect<T extends boolean = true> {
           | T
           | {
               label?: T;
-              href?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
               id?: T;
             };
         id?: T;
@@ -2818,14 +3164,30 @@ export interface FooterSelect<T extends boolean = true> {
     | {
         show?: T;
         text?: T;
-        href?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
       };
   copyright?: T;
   bottomLinks?:
     | T
     | {
         label?: T;
-        href?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
         id?: T;
       };
   updatedAt?: T;
