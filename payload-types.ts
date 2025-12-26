@@ -70,14 +70,8 @@ export interface Config {
     users: User;
     media: Media;
     pages: Page;
-    faq: Faq;
-    team: Team;
-    testimonials: Testimonial;
     forms: Form;
     'form-submissions': FormSubmission;
-    hero: Hero;
-    'cta-banners': CtaBanner;
-    'values-sections': ValuesSection;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,14 +82,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
-    faq: FaqSelect<false> | FaqSelect<true>;
-    team: TeamSelect<false> | TeamSelect<true>;
-    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
-    hero: HeroSelect<false> | HeroSelect<true>;
-    'cta-banners': CtaBannersSelect<false> | CtaBannersSelect<true>;
-    'values-sections': ValuesSectionsSelect<false> | ValuesSectionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -220,14 +208,6 @@ export interface Page {
    */
   visibility?: {
     /**
-     * Show this page in the main navigation
-     */
-    showInNavigation?: boolean | null;
-    /**
-     * Order in navigation (lower = first)
-     */
-    navigationOrder?: number | null;
-    /**
      * Show this page in the footer
      */
     showInFooter?: boolean | null;
@@ -241,6 +221,10 @@ export interface Page {
     footerOrder?: number | null;
   };
   /**
+   * Navigation style for this page (default uses Site Settings)
+   */
+  navigationStyle?: ('default' | 'classic' | 'modern' | 'transparent') | null;
+  /**
    * Page template determines available sections and layout
    */
   template: 'home' | 'about' | 'services' | 'service' | 'contact';
@@ -251,12 +235,93 @@ export interface Page {
     | (
         | {
             /**
-             * Select hero content from the library
+             * Main headline
              */
-            hero: number | Hero;
+            title: string;
+            /**
+             * Supporting text below the headline
+             */
+            subtitle?: string | null;
+            /**
+             * Call-to-action button text
+             */
+            ctaLabel?: string | null;
+            ctaLink: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            /**
+             * Background image (gradient overlay will be applied)
+             */
+            backgroundImage?: (number | null) | Media;
+            /**
+             * Opacity of the gradient overlay (0-100)
+             */
+            overlayOpacity?: number | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'hero-section';
+            blockType: 'hero-1';
+          }
+        | {
+            /**
+             * Main headline
+             */
+            title: string;
+            /**
+             * Supporting text
+             */
+            subtitle?: string | null;
+            /**
+             * Button text (e.g., Learn More)
+             */
+            ctaLabel?: string | null;
+            ctaLink: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero-2';
           }
         | {
             /**
@@ -289,213 +354,142 @@ export interface Page {
             showBreadcrumbs?: boolean | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'page-hero-section';
+            blockType: 'hero-3';
           }
         | {
             /**
-             * Select values section content from the library
-             */
-            valuesSection: number | ValuesSection;
-            /**
-             * Section background style
-             */
-            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'values-section';
-          }
-        | {
-            /**
-             * Section background style
-             */
-            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
-            /**
-             * Small text above the heading
+             * Small badge/tagline above the title (e.g., 'From Dusty to Dazzling')
              */
             badge?: string | null;
             /**
-             * Section heading
+             * Main headline
              */
-            heading?: string | null;
+            title: string;
             /**
-             * Section subheading or description
+             * Word from the title to highlight with primary color background
              */
-            subheading?: string | null;
+            highlightedWord?: string | null;
             /**
-             * Company values (4-6 recommended)
+             * Supporting text below the headline
              */
-            values?:
-              | {
-                  title: string;
-                  description?: string | null;
-                  /**
-                   * Icon representing this value
-                   */
-                  icon?:
-                    | (
-                        | 'home'
-                        | 'building'
-                        | 'sparkles'
-                        | 'brush'
-                        | 'droplets'
-                        | 'leaf'
-                        | 'shield'
-                        | 'clock'
-                        | 'star'
-                        | 'truck'
-                        | 'heart'
-                        | 'users'
-                        | 'award'
-                        | 'message-square'
-                      )
-                    | null;
-                  id?: string | null;
-                }[]
-              | null;
+            subtitle?: string | null;
             /**
-             * Number of columns on desktop
+             * Primary button text
              */
-            layout?: ('grid-2' | 'grid-3' | 'grid-4') | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'company-values-section';
-          }
-        | {
+            primaryCtaLabel?: string | null;
             /**
-             * Section background style
+             * Secondary button text
              */
-            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
-            /**
-             * Small text above the heading
-             */
-            badge?: string | null;
-            /**
-             * Section heading
-             */
-            heading?: string | null;
-            /**
-             * Section subheading or description
-             */
-            subheading?: string | null;
-            mission?: {
-              title?: string | null;
+            secondaryCtaLabel?: string | null;
+            primaryCtaLink: {
               /**
-               * Mission statement
+               * Link type
                */
-              content?: string | null;
+              type: 'internal' | 'external' | 'anchor';
               /**
-               * Optional image for mission card
+               * Select a page to link to
                */
-              image?: (number | null) | Media;
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
             };
-            vision?: {
-              title?: string | null;
+            secondaryCtaLink: {
               /**
-               * Vision statement
+               * Link type
                */
-              content?: string | null;
+              type: 'internal' | 'external' | 'anchor';
               /**
-               * Optional image for vision card
+               * Select a page to link to
                */
-              image?: (number | null) | Media;
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
             };
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'mission-vision-section';
-          }
-        | {
             /**
-             * Section background style
+             * Hero image (displayed on the right side)
              */
-            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            image?: (number | null) | Media;
             /**
-             * Small text above the heading
+             * Trust indicators (e.g., 'Verified Staff', 'Insured', 'Eco-Friendly')
              */
-            badge?: string | null;
-            /**
-             * Section heading
-             */
-            heading?: string | null;
-            /**
-             * Section subheading or description
-             */
-            subheading?: string | null;
-            /**
-             * Statistics to display (3-4 recommended)
-             */
-            stats?:
+            trustBadges?:
               | {
-                  /**
-                   * The number/value (e.g., '500+', '10K', '99%')
-                   */
-                  value: string;
-                  /**
-                   * Label describing the stat (e.g., 'Happy Clients')
-                   */
                   label: string;
-                  /**
-                   * Color variant for this stat card
-                   */
-                  variant?: ('navy' | 'teal' | 'yellow' | 'white') | null;
                   id?: string | null;
                 }[]
               | null;
             /**
-             * Number of columns on desktop
+             * Show stats card overlay on the image
              */
-            layout?: ('grid-2' | 'grid-3' | 'grid-4') | null;
+            showStats?: boolean | null;
+            /**
+             * Rating value
+             */
+            statsRating?: string | null;
+            /**
+             * Review count label
+             */
+            statsReviewCount?: string | null;
+            /**
+             * Experience value
+             */
+            statsExperience?: string | null;
+            /**
+             * Experience label
+             */
+            statsExperienceLabel?: string | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'stats-section';
+            blockType: 'hero-4';
           }
         | {
             /**
-             * Section background style
+             * Section title with accent underline
              */
-            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            title?: string | null;
             /**
-             * Small text above the heading
+             * Main content text
              */
-            badge?: string | null;
-            /**
-             * Section heading
-             */
-            heading?: string | null;
-            /**
-             * Section subheading or description
-             */
-            subheading?: string | null;
-            /**
-             * Timeline events in chronological order
-             */
-            events?:
-              | {
-                  /**
-                   * Year or date (e.g., '2020', 'Jan 2023')
-                   */
-                  year: string;
-                  /**
-                   * Event title
-                   */
-                  title: string;
-                  /**
-                   * Event description
-                   */
-                  description?: string | null;
-                  /**
-                   * Optional image for this event
-                   */
-                  image?: (number | null) | Media;
-                  id?: string | null;
-                }[]
-              | null;
-            /**
-             * Alternate events left/right on desktop
-             */
-            alternating?: boolean | null;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            alignment?: ('center' | 'left') | null;
+            bgVariant?: ('white' | 'light') | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'timeline-section';
+            blockType: 'lead-1';
           }
         | {
             /**
@@ -546,36 +540,25 @@ export interface Page {
             prose?: boolean | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'rich-text-section';
+            blockType: 'content-1';
           }
         | {
             /**
-             * Section background style
+             * Optional section title above the quote
              */
-            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            title?: string | null;
             /**
-             * Small text above the heading
+             * The quote text
              */
-            badge?: string | null;
+            quote: string;
             /**
-             * Section heading
+             * Optional attribution (author or source)
              */
-            heading?: string | null;
-            /**
-             * Section subheading or description
-             */
-            subheading?: string | null;
-            /**
-             * Select service pages to display (3 recommended)
-             */
-            services?: (number | Page)[] | null;
-            /**
-             * Link for 'View All' button (e.g., /services). Leave empty to hide button.
-             */
-            viewAllHref?: string | null;
+            attribution?: string | null;
+            bgVariant?: ('white' | 'light') | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'services-section';
+            blockType: 'quote-1';
           }
         | {
             /**
@@ -594,72 +577,120 @@ export interface Page {
              * Section subheading or description
              */
             subheading?: string | null;
-            /**
-             * Select specific service pages (leave empty to show all)
-             */
-            services?: (number | Page)[] | null;
-            /**
-             * Show all service pages (overrides selection above)
-             */
-            showAll?: boolean | null;
-            /**
-             * Maximum number of services to show
-             */
-            limit?: number | null;
-            /**
-             * Show service prices on cards
-             */
-            showPrices?: boolean | null;
-            /**
-             * Show feature bullets on cards
-             */
-            showFeatures?: boolean | null;
-            /**
-             * Number of columns on desktop
-             */
-            layout?: ('grid-2' | 'grid-3') | null;
-            /**
-             * Call-to-action section
-             */
-            cta?: {
-              /**
-               * Show the CTA section
-               */
-              show?: boolean | null;
-              /**
-               * Text above the button
-               */
-              text?: string | null;
-              /**
-               * Button label
-               */
-              buttonText?: string | null;
-              buttonLink?: {
-                /**
-                 * Link type
-                 */
-                type: 'internal' | 'external' | 'anchor';
-                /**
-                 * Select a page to link to
-                 */
-                page?: (number | null) | Page;
-                /**
-                 * Full URL (e.g., https://example.com)
-                 */
-                url?: string | null;
-                /**
-                 * Anchor (e.g., #contact or contact)
-                 */
-                anchor?: string | null;
-                /**
-                 * Open in new tab
-                 */
-                newTab?: boolean | null;
-              };
+            left?: {
+              title?: string | null;
+              content?: string | null;
+              image?: (number | null) | Media;
+            };
+            right?: {
+              title?: string | null;
+              content?: string | null;
+              image?: (number | null) | Media;
             };
             id?: string | null;
             blockName?: string | null;
-            blockType: 'services-grid-section';
+            blockType: 'split-1';
+          }
+        | {
+            image: number | Media;
+            /**
+             * Optional caption below the image
+             */
+            caption?: string | null;
+            aspectRatio?: ('16:9' | '4:3' | '1:1' | 'auto') | null;
+            /**
+             * Apply rounded corners
+             */
+            rounded?: boolean | null;
+            /**
+             * Apply shadow effect
+             */
+            shadow?: boolean | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'image-1';
+          }
+        | {
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            cards?:
+              | {
+                  /**
+                   * Icon to display
+                   */
+                  icon?:
+                    | (
+                        | 'home'
+                        | 'building'
+                        | 'sparkles'
+                        | 'brush'
+                        | 'droplets'
+                        | 'leaf'
+                        | 'shield'
+                        | 'clock'
+                        | 'star'
+                        | 'truck'
+                        | 'heart'
+                        | 'users'
+                        | 'award'
+                        | 'message-square'
+                      )
+                    | null;
+                  title: string;
+                  description?: string | null;
+                  /**
+                   * Link to an internal page
+                   */
+                  page?: (number | null) | Page;
+                  externalLink: {
+                    /**
+                     * Link type
+                     */
+                    type: 'internal' | 'external' | 'anchor';
+                    /**
+                     * Select a page to link to
+                     */
+                    page?: (number | null) | Page;
+                    /**
+                     * Full URL (e.g., https://example.com)
+                     */
+                    url?: string | null;
+                    /**
+                     * Anchor (e.g., #contact or contact)
+                     */
+                    anchor?: string | null;
+                    /**
+                     * Open in new tab
+                     */
+                    newTab?: boolean | null;
+                  };
+                  /**
+                   * Link text
+                   */
+                  linkLabel?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Visual style for the cards
+             */
+            cardStyle?: ('feature' | 'service' | 'service-compact') | null;
+            columns?: ('2' | '3' | '4') | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cards-1';
           }
         | {
             /**
@@ -678,34 +709,46 @@ export interface Page {
              * Section subheading or description
              */
             subheading?: string | null;
-            /**
-             * Pricing tiers (2-3 recommended)
-             */
-            tiers?:
+            items?:
               | {
                   /**
-                   * Tier name (e.g., 'Basic', 'Pro', 'Enterprise')
+                   * The number/value (e.g., '500+', '10K', '99%')
                    */
+                  value: string;
+                  label: string;
+                  variant?: ('navy' | 'teal' | 'yellow' | 'white') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            layout?: ('grid-2' | 'grid-3' | 'grid-4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            tiers?:
+              | {
                   name: string;
-                  /**
-                   * Price (e.g., '$99', 'From $199', 'Custom')
-                   */
                   price: string;
-                  /**
-                   * Billing period (e.g., 'per visit', 'per month')
-                   */
                   period?: string | null;
-                  /**
-                   * Short description of this tier
-                   */
                   description?: string | null;
-                  /**
-                   * Highlight this tier as featured/popular
-                   */
                   featured?: boolean | null;
-                  /**
-                   * Features included in this tier
-                   */
                   features?:
                     | {
                         feature: string;
@@ -740,7 +783,7 @@ export interface Page {
               | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'pricing-section';
+            blockType: 'pricing-1';
           }
         | {
             /**
@@ -759,13 +802,165 @@ export interface Page {
              * Section subheading or description
              */
             subheading?: string | null;
-            /**
-             * Select testimonials to display
-             */
-            testimonials?: (number | Testimonial)[] | null;
+            items?:
+              | {
+                  title: string;
+                  description?: string | null;
+                  /**
+                   * Icon to display
+                   */
+                  icon?:
+                    | (
+                        | 'home'
+                        | 'building'
+                        | 'sparkles'
+                        | 'brush'
+                        | 'droplets'
+                        | 'leaf'
+                        | 'shield'
+                        | 'clock'
+                        | 'star'
+                        | 'truck'
+                        | 'heart'
+                        | 'users'
+                        | 'award'
+                        | 'message-square'
+                      )
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            layout?: ('grid-2' | 'grid-3' | 'grid-4') | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'testimonials-section';
+            blockType: 'values-1';
+          }
+        | {
+            /**
+             * Small text above heading (e.g., 'Our Story')
+             */
+            badge?: string | null;
+            /**
+             * Main heading
+             */
+            heading?: string | null;
+            /**
+             * Description text below heading
+             */
+            description?: string | null;
+            /**
+             * CTA button text
+             */
+            ctaLabel?: string | null;
+            ctaLink: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            /**
+             * Value pills displayed on the right side
+             */
+            values?:
+              | {
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Show stats cards below
+             */
+            showStats?: boolean | null;
+            /**
+             * Stats cards displayed at the bottom
+             */
+            stats?:
+              | {
+                  /**
+                   * The stat value (e.g., '10,000+')
+                   */
+                  value: string;
+                  /**
+                   * The stat label (e.g., 'Spaces Cleaned')
+                   */
+                  label: string;
+                  /**
+                   * Card color variant
+                   */
+                  variant?: ('navy' | 'teal' | 'cyan' | 'sky') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'values-2';
+          }
+        | {
+            title?: string | null;
+            items?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            columns?: ('1' | '2') | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'checklist-1';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            items?:
+              | {
+                  /**
+                   * Icon to display
+                   */
+                  icon?:
+                    | (
+                        | 'home'
+                        | 'building'
+                        | 'sparkles'
+                        | 'brush'
+                        | 'droplets'
+                        | 'leaf'
+                        | 'shield'
+                        | 'clock'
+                        | 'star'
+                        | 'truck'
+                        | 'heart'
+                        | 'users'
+                        | 'award'
+                        | 'message-square'
+                      )
+                    | null;
+                  title: string;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            columns?: ('1' | '2') | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'steps-1';
           }
         | {
             /**
@@ -784,29 +979,74 @@ export interface Page {
              * Section subheading or description
              */
             subheading?: string | null;
+            events?:
+              | {
+                  /**
+                   * Year or date
+                   */
+                  year: string;
+                  title: string;
+                  description?: string | null;
+                  image?: (number | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
             /**
-             * Select team members to display (leave empty to show all)
+             * Alternate events left/right on desktop
              */
-            teamMembers?: (number | Team)[] | null;
+            alternating?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline-1';
+          }
+        | {
             /**
-             * Show all team members (overrides selection above)
+             * Section background style
              */
-            showAll?: boolean | null;
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
             /**
-             * Number of columns on desktop
+             * Small text above the heading
              */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            members?:
+              | {
+                  name: string;
+                  role?: string | null;
+                  bio?: string | null;
+                  photo?: (number | null) | Media;
+                  /**
+                   * Social media links
+                   */
+                  socialLinks?:
+                    | {
+                        /**
+                         * Social media platform
+                         */
+                        platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin' | 'youtube' | 'tiktok';
+                        /**
+                         * Full URL to social profile
+                         */
+                        url: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
             layout?: ('grid-2' | 'grid-3' | 'grid-4') | null;
-            /**
-             * Show team member bios
-             */
             showBio?: boolean | null;
-            /**
-             * Show social media links
-             */
             showSocialLinks?: boolean | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'team-section';
+            blockType: 'team-1';
           }
         | {
             /**
@@ -825,52 +1065,223 @@ export interface Page {
              * Section subheading or description
              */
             subheading?: string | null;
+            items?:
+              | {
+                  quote: string;
+                  author?: string | null;
+                  role?: string | null;
+                  company?: string | null;
+                  photo?: (number | null) | Media;
+                  rating?: number | null;
+                  id?: string | null;
+                }[]
+              | null;
+            layout?: ('carousel' | 'grid') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials-1';
+          }
+        | {
             /**
-             * Select FAQs to display (4-6 recommended)
+             * Small text above the heading
              */
-            faqs?: (number | Faq)[] | null;
+            badge?: string | null;
             /**
-             * Call-to-action section
+             * Section heading
              */
-            cta?: {
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            items?:
+              | {
+                  title: string;
+                  date?: string | null;
+                  excerpt?: string | null;
+                  image?: (number | null) | Media;
+                  /**
+                   * External URL
+                   */
+                  link?: string | null;
+                  category?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'articles-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            items?:
+              | {
+                  question: string;
+                  answer?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  id?: string | null;
+                }[]
+              | null;
+            showCta?: boolean | null;
+            ctaText?: string | null;
+            ctaButtonLabel?: string | null;
+            ctaLink: {
               /**
-               * Show the CTA section
+               * Link type
                */
-              show?: boolean | null;
+              type: 'internal' | 'external' | 'anchor';
               /**
-               * Text above the button
+               * Select a page to link to
                */
-              text?: string | null;
+              page?: (number | null) | Page;
               /**
-               * Button label
+               * Full URL (e.g., https://example.com)
                */
-              buttonText?: string | null;
-              buttonLink?: {
-                /**
-                 * Link type
-                 */
-                type: 'internal' | 'external' | 'anchor';
-                /**
-                 * Select a page to link to
-                 */
-                page?: (number | null) | Page;
-                /**
-                 * Full URL (e.g., https://example.com)
-                 */
-                url?: string | null;
-                /**
-                 * Anchor (e.g., #contact or contact)
-                 */
-                anchor?: string | null;
-                /**
-                 * Open in new tab
-                 */
-                newTab?: boolean | null;
-              };
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
             };
             id?: string | null;
             blockName?: string | null;
-            blockType: 'faq-section';
+            blockType: 'faq-1';
+          }
+        | {
+            heading?: string | null;
+            description?: string | null;
+            primaryCta: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            primaryLabel?: string | null;
+            secondaryCta: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            secondaryLabel?: string | null;
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Form on right, info on left
+             */
+            reversed?: boolean | null;
+            /**
+             * Select the form to display
+             */
+            form: number | Form;
+            formHeading?: string | null;
+            formSubheading?: string | null;
+            infoHeading?: string | null;
+            infoSubheading?: string | null;
+            overrideContactInfo?: boolean | null;
+            contactItems?:
+              | {
+                  type: 'phone' | 'email' | 'address';
+                  label: string;
+                  value: string;
+                  id?: string | null;
+                }[]
+              | null;
+            overrideBusinessHours?: boolean | null;
+            businessHours?:
+              | {
+                  days: string;
+                  hours: string;
+                  id?: string | null;
+                }[]
+              | null;
+            overrideSocialLinks?: boolean | null;
+            socialLinks?:
+              | {
+                  platform: 'linkedin' | 'twitter' | 'facebook' | 'instagram' | 'youtube';
+                  url: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contact-1';
           }
         | {
             /**
@@ -895,106 +1306,28 @@ export interface Page {
             form: number | Form;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'contact-form-section';
+            blockType: 'form-1';
           }
         | {
             /**
              * Section background style
              */
             bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
-            /**
-             * Small text above the heading
-             */
-            badge?: string | null;
-            /**
-             * Section heading
-             */
-            heading?: string | null;
-            /**
-             * Section subheading or description
-             */
-            subheading?: string | null;
-            /**
-             * Select the contact form to display
-             */
-            form: number | Form;
-            /**
-             * Show contact information alongside the form
-             */
-            showContactInfo?: boolean | null;
-            /**
-             * Show embedded map below the section
-             */
-            showMap?: boolean | null;
-            /**
-             * Address to show on map (uses site settings if empty)
-             */
-            mapAddress?: string | null;
-            /**
-             * Show social media links in contact info
-             */
-            showSocialLinks?: boolean | null;
-            /**
-             * Layout arrangement
-             */
-            layout?: ('side-by-side' | 'form-only' | 'stacked') | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'contact-section';
-          }
-        | {
-            /**
-             * Section background style
-             */
-            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
-            /**
-             * Show section header above map
-             */
             showHeader?: boolean | null;
-            /**
-             * Small text above the heading
-             */
             badge?: string | null;
-            /**
-             * Section heading
-             */
             heading?: string | null;
-            /**
-             * Section subheading
-             */
             subheading?: string | null;
             /**
              * Address for the map (uses site settings if empty)
              */
             address?: string | null;
-            /**
-             * Label to display above the map (optional)
-             */
             addressLabel?: string | null;
-            /**
-             * Map height
-             */
             height?: ('small' | 'medium' | 'large') | null;
-            /**
-             * Map zoom level (1-20)
-             */
             zoom?: number | null;
-            /**
-             * Make map full width (edge to edge)
-             */
             fullWidth?: boolean | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'map-embed-section';
-          }
-        | {
-            /**
-             * Select CTA banner content
-             */
-            ctaBanner?: (number | null) | CtaBanner;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'cta-banner-section';
+            blockType: 'map-1';
           }
       )[]
     | null;
@@ -1074,279 +1407,6 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * Hero banner content for the homepage
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "hero".
- */
-export interface Hero {
-  id: number;
-  /**
-   * Visual style variant
-   */
-  variant?: ('default' | 'centered' | 'fullBackground') | null;
-  /**
-   * Small badge text above the headline
-   */
-  badge: string;
-  /**
-   * Main headline (the highlighted word will be the last word)
-   */
-  headline: string;
-  /**
-   * Word to highlight with teal background (must be contained in the headline)
-   */
-  highlightedWord: string;
-  subheadline: string;
-  primaryCta: {
-    label: string;
-    link: {
-      /**
-       * Link type
-       */
-      type: 'internal' | 'external' | 'anchor';
-      /**
-       * Select a page to link to
-       */
-      page?: (number | null) | Page;
-      /**
-       * Full URL (e.g., https://example.com)
-       */
-      url?: string | null;
-      /**
-       * Anchor (e.g., #contact or contact)
-       */
-      anchor?: string | null;
-      /**
-       * Open in new tab
-       */
-      newTab?: boolean | null;
-    };
-  };
-  secondaryCta: {
-    label: string;
-    link: {
-      /**
-       * Link type
-       */
-      type: 'internal' | 'external' | 'anchor';
-      /**
-       * Select a page to link to
-       */
-      page?: (number | null) | Page;
-      /**
-       * Full URL (e.g., https://example.com)
-       */
-      url?: string | null;
-      /**
-       * Anchor (e.g., #contact or contact)
-       */
-      anchor?: string | null;
-      /**
-       * Open in new tab
-       */
-      newTab?: boolean | null;
-    };
-  };
-  image: number | Media;
-  trustBadges?:
-    | {
-        label: string;
-        id?: string | null;
-      }[]
-    | null;
-  stats: {
-    rating: string;
-    reviewCount: string;
-    experience: string;
-    experienceLabel: string;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Reusable values/about sections with stats and badges
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "values-sections".
- */
-export interface ValuesSection {
-  id: number;
-  /**
-   * Visual style variant
-   */
-  variant?: ('default' | 'minimal' | 'withImage') | null;
-  /**
-   * Small badge text above the heading
-   */
-  badge?: string | null;
-  heading: string;
-  description?: string | null;
-  /**
-   * CTA button text
-   */
-  ctaLabel?: string | null;
-  ctaLink: {
-    /**
-     * Link type
-     */
-    type: 'internal' | 'external' | 'anchor';
-    /**
-     * Select a page to link to
-     */
-    page?: (number | null) | Page;
-    /**
-     * Full URL (e.g., https://example.com)
-     */
-    url?: string | null;
-    /**
-     * Anchor (e.g., #contact or contact)
-     */
-    anchor?: string | null;
-    /**
-     * Open in new tab
-     */
-    newTab?: boolean | null;
-  };
-  /**
-   * Image (used in 'With Image' variant)
-   */
-  image?: (number | null) | Media;
-  /**
-   * Value badges to display
-   */
-  values?:
-    | {
-        label: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Statistics cards
-   */
-  stats?:
-    | {
-        value: string;
-        label: string;
-        variant?: ('navy' | 'teal' | 'teal-dark') | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Customer reviews and testimonials
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials".
- */
-export interface Testimonial {
-  id: number;
-  /**
-   * The testimonial text
-   */
-  quote: string;
-  /**
-   * Customer name
-   */
-  author: string;
-  /**
-   * Job title, location, or context (e.g., 'Homeowner, Brooklyn')
-   */
-  role?: string | null;
-  /**
-   * Customer photo (optional)
-   */
-  avatar?: (number | null) | Media;
-  /**
-   * Star rating
-   */
-  rating: '5' | '4' | '3' | '2' | '1';
-  /**
-   * Show on homepage
-   */
-  featured?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Team member profiles
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team".
- */
-export interface Team {
-  id: number;
-  /**
-   * Full name
-   */
-  name: string;
-  /**
-   * Job title
-   */
-  role: string;
-  /**
-   * Short biography
-   */
-  bio?: string | null;
-  /**
-   * Profile photo
-   */
-  photo: number | Media;
-  /**
-   * Contact email (optional)
-   */
-  email?: string | null;
-  /**
-   * Sort order (lower numbers appear first)
-   */
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Frequently asked questions
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faq".
- */
-export interface Faq {
-  id: number;
-  /**
-   * The question
-   */
-  question: string;
-  /**
-   * The answer
-   */
-  answer: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  /**
-   * FAQ category for filtering
-   */
-  category: 'general' | 'services' | 'pricing' | 'booking';
-  /**
-   * Sort order (lower numbers appear first)
-   */
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * Configurable forms with validation rules
@@ -1451,50 +1511,6 @@ export interface Form {
   createdAt: string;
 }
 /**
- * Call-to-action banners with background images
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cta-banners".
- */
-export interface CtaBanner {
-  id: number;
-  /**
-   * Internal name for this banner
-   */
-  title: string;
-  headingWhite?: string | null;
-  headingTeal?: string | null;
-  buttonText?: string | null;
-  buttonLink: {
-    /**
-     * Link type
-     */
-    type: 'internal' | 'external' | 'anchor';
-    /**
-     * Select a page to link to
-     */
-    page?: (number | null) | Page;
-    /**
-     * Full URL (e.g., https://example.com)
-     */
-    url?: string | null;
-    /**
-     * Anchor (e.g., #contact or contact)
-     */
-    anchor?: string | null;
-    /**
-     * Open in new tab
-     */
-    newTab?: boolean | null;
-  };
-  /**
-   * Recommended: 1920x600px or larger for parallax effect
-   */
-  backgroundImage?: (number | null) | Media;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * Submitted form data
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1562,36 +1578,12 @@ export interface PayloadLockedDocument {
         value: number | Page;
       } | null)
     | ({
-        relationTo: 'faq';
-        value: number | Faq;
-      } | null)
-    | ({
-        relationTo: 'team';
-        value: number | Team;
-      } | null)
-    | ({
-        relationTo: 'testimonials';
-        value: number | Testimonial;
-      } | null)
-    | ({
         relationTo: 'forms';
         value: number | Form;
       } | null)
     | ({
         relationTo: 'form-submissions';
         value: number | FormSubmission;
-      } | null)
-    | ({
-        relationTo: 'hero';
-        value: number | Hero;
-      } | null)
-    | ({
-        relationTo: 'cta-banners';
-        value: number | CtaBanner;
-      } | null)
-    | ({
-        relationTo: 'values-sections';
-        value: number | ValuesSection;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1689,24 +1681,55 @@ export interface PagesSelect<T extends boolean = true> {
   visibility?:
     | T
     | {
-        showInNavigation?: T;
-        navigationOrder?: T;
         showInFooter?: T;
         footerColumn?: T;
         footerOrder?: T;
       };
+  navigationStyle?: T;
   template?: T;
   sections?:
     | T
     | {
-        'hero-section'?:
+        'hero-1'?:
           | T
           | {
-              hero?: T;
+              title?: T;
+              subtitle?: T;
+              ctaLabel?: T;
+              ctaLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              backgroundImage?: T;
+              overlayOpacity?: T;
               id?: T;
               blockName?: T;
             };
-        'page-hero-section'?:
+        'hero-2'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              ctaLabel?: T;
+              ctaLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'hero-3'?:
           | T
           | {
               variant?: T;
@@ -1719,97 +1742,59 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
-        'values-section'?:
+        'hero-4'?:
           | T
           | {
-              valuesSection?: T;
-              bgVariant?: T;
-              id?: T;
-              blockName?: T;
-            };
-        'company-values-section'?:
-          | T
-          | {
-              bgVariant?: T;
               badge?: T;
-              heading?: T;
-              subheading?: T;
-              values?:
+              title?: T;
+              highlightedWord?: T;
+              subtitle?: T;
+              primaryCtaLabel?: T;
+              secondaryCtaLabel?: T;
+              primaryCtaLink?:
                 | T
                 | {
-                    title?: T;
-                    description?: T;
-                    icon?: T;
-                    id?: T;
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
                   };
-              layout?: T;
-              id?: T;
-              blockName?: T;
-            };
-        'mission-vision-section'?:
-          | T
-          | {
-              bgVariant?: T;
-              badge?: T;
-              heading?: T;
-              subheading?: T;
-              mission?:
+              secondaryCtaLink?:
                 | T
                 | {
-                    title?: T;
-                    content?: T;
-                    image?: T;
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
                   };
-              vision?:
+              image?: T;
+              trustBadges?:
                 | T
                 | {
-                    title?: T;
-                    content?: T;
-                    image?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        'stats-section'?:
-          | T
-          | {
-              bgVariant?: T;
-              badge?: T;
-              heading?: T;
-              subheading?: T;
-              stats?:
-                | T
-                | {
-                    value?: T;
                     label?: T;
-                    variant?: T;
                     id?: T;
                   };
-              layout?: T;
+              showStats?: T;
+              statsRating?: T;
+              statsReviewCount?: T;
+              statsExperience?: T;
+              statsExperienceLabel?: T;
               id?: T;
               blockName?: T;
             };
-        'timeline-section'?:
+        'lead-1'?:
           | T
           | {
+              title?: T;
+              content?: T;
+              alignment?: T;
               bgVariant?: T;
-              badge?: T;
-              heading?: T;
-              subheading?: T;
-              events?:
-                | T
-                | {
-                    year?: T;
-                    title?: T;
-                    description?: T;
-                    image?: T;
-                    id?: T;
-                  };
-              alternating?: T;
               id?: T;
               blockName?: T;
             };
-        'rich-text-section'?:
+        'content-1'?:
           | T
           | {
               bgVariant?: T;
@@ -1823,38 +1808,66 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
-        'services-section'?:
+        'quote-1'?:
           | T
           | {
+              title?: T;
+              quote?: T;
+              attribution?: T;
               bgVariant?: T;
-              badge?: T;
-              heading?: T;
-              subheading?: T;
-              services?: T;
-              viewAllHref?: T;
               id?: T;
               blockName?: T;
             };
-        'services-grid-section'?:
+        'split-1'?:
           | T
           | {
               bgVariant?: T;
               badge?: T;
               heading?: T;
               subheading?: T;
-              services?: T;
-              showAll?: T;
-              limit?: T;
-              showPrices?: T;
-              showFeatures?: T;
-              layout?: T;
-              cta?:
+              left?:
                 | T
                 | {
-                    show?: T;
-                    text?: T;
-                    buttonText?: T;
-                    buttonLink?:
+                    title?: T;
+                    content?: T;
+                    image?: T;
+                  };
+              right?:
+                | T
+                | {
+                    title?: T;
+                    content?: T;
+                    image?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'image-1'?:
+          | T
+          | {
+              image?: T;
+              caption?: T;
+              aspectRatio?: T;
+              rounded?: T;
+              shadow?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'cards-1'?:
+          | T
+          | {
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              cards?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    description?: T;
+                    page?: T;
+                    externalLink?:
                       | T
                       | {
                           type?: T;
@@ -1863,11 +1876,35 @@ export interface PagesSelect<T extends boolean = true> {
                           anchor?: T;
                           newTab?: T;
                         };
+                    linkLabel?: T;
+                    id?: T;
                   };
+              cardStyle?: T;
+              columns?: T;
+              bgVariant?: T;
               id?: T;
               blockName?: T;
             };
-        'pricing-section'?:
+        'stats-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              items?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'pricing-1'?:
           | T
           | {
               bgVariant?: T;
@@ -1903,87 +1940,292 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
-        'testimonials-section'?:
+        'values-1'?:
           | T
           | {
               bgVariant?: T;
               badge?: T;
               heading?: T;
               subheading?: T;
-              testimonials?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              layout?: T;
               id?: T;
               blockName?: T;
             };
-        'team-section'?:
+        'values-2'?:
+          | T
+          | {
+              badge?: T;
+              heading?: T;
+              description?: T;
+              ctaLabel?: T;
+              ctaLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              values?:
+                | T
+                | {
+                    label?: T;
+                    id?: T;
+                  };
+              showStats?: T;
+              stats?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'checklist-1'?:
+          | T
+          | {
+              title?: T;
+              items?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              columns?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'steps-1'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              columns?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'timeline-1'?:
           | T
           | {
               bgVariant?: T;
               badge?: T;
               heading?: T;
               subheading?: T;
-              teamMembers?: T;
-              showAll?: T;
+              events?:
+                | T
+                | {
+                    year?: T;
+                    title?: T;
+                    description?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              alternating?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'team-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              members?:
+                | T
+                | {
+                    name?: T;
+                    role?: T;
+                    bio?: T;
+                    photo?: T;
+                    socialLinks?:
+                      | T
+                      | {
+                          platform?: T;
+                          url?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
               layout?: T;
               showBio?: T;
               showSocialLinks?: T;
               id?: T;
               blockName?: T;
             };
-        'faq-section'?:
+        'testimonials-1'?:
           | T
           | {
               bgVariant?: T;
               badge?: T;
               heading?: T;
               subheading?: T;
-              faqs?: T;
-              cta?:
+              items?:
                 | T
                 | {
-                    show?: T;
-                    text?: T;
-                    buttonText?: T;
-                    buttonLink?:
-                      | T
-                      | {
-                          type?: T;
-                          page?: T;
-                          url?: T;
-                          anchor?: T;
-                          newTab?: T;
-                        };
+                    quote?: T;
+                    author?: T;
+                    role?: T;
+                    company?: T;
+                    photo?: T;
+                    rating?: T;
+                    id?: T;
                   };
-              id?: T;
-              blockName?: T;
-            };
-        'contact-form-section'?:
-          | T
-          | {
-              bgVariant?: T;
-              badge?: T;
-              heading?: T;
-              subheading?: T;
-              form?: T;
-              id?: T;
-              blockName?: T;
-            };
-        'contact-section'?:
-          | T
-          | {
-              bgVariant?: T;
-              badge?: T;
-              heading?: T;
-              subheading?: T;
-              form?: T;
-              showContactInfo?: T;
-              showMap?: T;
-              mapAddress?: T;
-              showSocialLinks?: T;
               layout?: T;
               id?: T;
               blockName?: T;
             };
-        'map-embed-section'?:
+        'articles-1'?:
+          | T
+          | {
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    date?: T;
+                    excerpt?: T;
+                    image?: T;
+                    link?: T;
+                    category?: T;
+                    id?: T;
+                  };
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'faq-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              showCta?: T;
+              ctaText?: T;
+              ctaButtonLabel?: T;
+              ctaLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'cta-1'?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              primaryCta?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              primaryLabel?: T;
+              secondaryCta?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              secondaryLabel?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'contact-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              reversed?: T;
+              form?: T;
+              formHeading?: T;
+              formSubheading?: T;
+              infoHeading?: T;
+              infoSubheading?: T;
+              overrideContactInfo?: T;
+              contactItems?:
+                | T
+                | {
+                    type?: T;
+                    label?: T;
+                    value?: T;
+                    id?: T;
+                  };
+              overrideBusinessHours?: T;
+              businessHours?:
+                | T
+                | {
+                    days?: T;
+                    hours?: T;
+                    id?: T;
+                  };
+              overrideSocialLinks?: T;
+              socialLinks?:
+                | T
+                | {
+                    platform?: T;
+                    url?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'form-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              form?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'map-1'?:
           | T
           | {
               bgVariant?: T;
@@ -1996,13 +2238,6 @@ export interface PagesSelect<T extends boolean = true> {
               height?: T;
               zoom?: T;
               fullWidth?: T;
-              id?: T;
-              blockName?: T;
-            };
-        'cta-banner-section'?:
-          | T
-          | {
-              ctaBanner?: T;
               id?: T;
               blockName?: T;
             };
@@ -2032,46 +2267,6 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faq_select".
- */
-export interface FaqSelect<T extends boolean = true> {
-  question?: T;
-  answer?: T;
-  category?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team_select".
- */
-export interface TeamSelect<T extends boolean = true> {
-  name?: T;
-  role?: T;
-  bio?: T;
-  photo?: T;
-  email?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials_select".
- */
-export interface TestimonialsSelect<T extends boolean = true> {
-  quote?: T;
-  author?: T;
-  role?: T;
-  avatar?: T;
-  rating?: T;
-  featured?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2121,121 +2316,6 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
   form?: T;
   data?: T;
   submittedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "hero_select".
- */
-export interface HeroSelect<T extends boolean = true> {
-  variant?: T;
-  badge?: T;
-  headline?: T;
-  highlightedWord?: T;
-  subheadline?: T;
-  primaryCta?:
-    | T
-    | {
-        label?: T;
-        link?:
-          | T
-          | {
-              type?: T;
-              page?: T;
-              url?: T;
-              anchor?: T;
-              newTab?: T;
-            };
-      };
-  secondaryCta?:
-    | T
-    | {
-        label?: T;
-        link?:
-          | T
-          | {
-              type?: T;
-              page?: T;
-              url?: T;
-              anchor?: T;
-              newTab?: T;
-            };
-      };
-  image?: T;
-  trustBadges?:
-    | T
-    | {
-        label?: T;
-        id?: T;
-      };
-  stats?:
-    | T
-    | {
-        rating?: T;
-        reviewCount?: T;
-        experience?: T;
-        experienceLabel?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cta-banners_select".
- */
-export interface CtaBannersSelect<T extends boolean = true> {
-  title?: T;
-  headingWhite?: T;
-  headingTeal?: T;
-  buttonText?: T;
-  buttonLink?:
-    | T
-    | {
-        type?: T;
-        page?: T;
-        url?: T;
-        anchor?: T;
-        newTab?: T;
-      };
-  backgroundImage?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "values-sections_select".
- */
-export interface ValuesSectionsSelect<T extends boolean = true> {
-  variant?: T;
-  badge?: T;
-  heading?: T;
-  description?: T;
-  ctaLabel?: T;
-  ctaLink?:
-    | T
-    | {
-        type?: T;
-        page?: T;
-        url?: T;
-        anchor?: T;
-        newTab?: T;
-      };
-  image?: T;
-  values?:
-    | T
-    | {
-        label?: T;
-        id?: T;
-      };
-  stats?:
-    | T
-    | {
-        value?: T;
-        label?: T;
-        variant?: T;
-        id?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2299,6 +2379,10 @@ export interface SiteSetting {
    * Favicon (16x16 or 32x32)
    */
   favicon?: (number | null) | Media;
+  /**
+   * Default navigation style for all pages (can be overridden per page)
+   */
+  defaultNavigationStyle?: ('classic' | 'modern' | 'transparent') | null;
   /**
    * Contact information
    */
@@ -2399,6 +2483,10 @@ export interface Navigation {
    */
   brand: {
     /**
+     * When enabled, uses site name and logo from Site Settings
+     */
+    useGlobalBrand?: boolean | null;
+    /**
      * Site logo (replaces text brand when set)
      */
     logo?: (number | null) | Media;
@@ -2437,14 +2525,25 @@ export interface Navigation {
     tagline?: string | null;
   };
   /**
+   * Navigation style settings
+   */
+  style?: {
+    /**
+     * Transform navigation links to uppercase
+     */
+    uppercase?: boolean | null;
+  };
+  /**
    * Top bar with contact info (desktop only)
    */
   topBar?: {
     show?: boolean | null;
+    useGlobalPhone?: boolean | null;
     /**
      * Phone number to display
      */
     phone?: string | null;
+    useGlobalHours?: boolean | null;
     /**
      * Working hours text
      */
@@ -2453,6 +2552,7 @@ export interface Navigation {
      * Tagline shown on the right side
      */
     tagline?: string | null;
+    useGlobalSocialLinks?: boolean | null;
     /**
      * Social media links
      */
@@ -2471,48 +2571,44 @@ export interface Navigation {
       | null;
   };
   /**
-   * Dropdowns that auto-populate from a parent page's children
+   * Navigation menu items (drag to reorder)
    */
-  pageDropdowns?:
+  items?:
     | {
         /**
-         * Parent page - its children will populate this dropdown
+         * Type of navigation item
          */
-        parentPage: number | Page;
+        type: 'page' | 'dropdown' | 'special';
         /**
-         * Override dropdown label (uses parent page title if empty)
+         * Page to link to (label auto-filled from page title)
          */
-        label?: string | null;
+        page?: (number | null) | Page;
         /**
-         * Position in navigation (lower = earlier)
+         * Override page title (optional)
          */
-        order?: number | null;
+        pageLabel?: string | null;
         /**
-         * Show 'View All' link to parent page at bottom of dropdown
+         * Dropdown trigger label
+         */
+        dropdownLabel?: string | null;
+        /**
+         * How to populate dropdown items
+         */
+        dropdownSource?: ('children' | 'custom') | null;
+        /**
+         * Parent page - its children populate this dropdown
+         */
+        parentPage?: (number | null) | Page;
+        /**
+         * Show 'View All' link to parent page
          */
         showViewAll?: boolean | null;
         /**
          * Label for 'View All' link
          */
         viewAllLabel?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Custom dropdown menus with icons and descriptions
-   */
-  dropdowns?:
-    | {
         /**
-         * Dropdown trigger label (e.g., 'Services')
-         */
-        label: string;
-        /**
-         * Position in navigation (lower = earlier)
-         */
-        order?: number | null;
-        /**
-         * Dropdown menu items
+         * Custom dropdown menu items
          */
         children?:
           | {
@@ -2552,16 +2648,11 @@ export interface Navigation {
               id?: string | null;
             }[]
           | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Special navigation links (external URLs, anchor links)
-   */
-  specialLinks?:
-    | {
-        label: string;
-        link: {
+        /**
+         * Link label
+         */
+        specialLabel?: string | null;
+        specialLink?: {
           /**
            * Link type
            */
@@ -2583,10 +2674,6 @@ export interface Navigation {
            */
           newTab?: boolean | null;
         };
-        /**
-         * Position in navigation (lower = earlier)
-         */
-        order?: number | null;
         id?: string | null;
       }[]
     | null;
@@ -2635,6 +2722,10 @@ export interface Footer {
    */
   brand?: {
     /**
+     * When enabled, uses site name and logo from Site Settings
+     */
+    useGlobalBrand?: boolean | null;
+    /**
      * Footer logo (optional, shows icon if not set)
      */
     logo?: (number | null) | Media;
@@ -2680,6 +2771,10 @@ export interface Footer {
       }[]
     | null;
   /**
+   * When enabled, uses phone, email, and address from Site Settings
+   */
+  useGlobalContact?: boolean | null;
+  /**
    * Contact information
    */
   contact?: {
@@ -2696,6 +2791,7 @@ export interface Footer {
      */
     address?: string | null;
   };
+  useGlobalSocialLinks?: boolean | null;
   /**
    * Social media links
    */
@@ -2747,6 +2843,7 @@ export interface Footer {
       newTab?: boolean | null;
     };
   };
+  useGlobalCopyright?: boolean | null;
   /**
    * Copyright text (year is added automatically)
    */
@@ -2963,6 +3060,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   siteName?: T;
   logo?: T;
   favicon?: T;
+  defaultNavigationStyle?: T;
   contact?:
     | T
     | {
@@ -3022,6 +3120,7 @@ export interface NavigationSelect<T extends boolean = true> {
   brand?:
     | T
     | {
+        useGlobalBrand?: T;
         logo?: T;
         logoLink?:
           | T
@@ -3035,13 +3134,21 @@ export interface NavigationSelect<T extends boolean = true> {
         name?: T;
         tagline?: T;
       };
+  style?:
+    | T
+    | {
+        uppercase?: T;
+      };
   topBar?:
     | T
     | {
         show?: T;
+        useGlobalPhone?: T;
         phone?: T;
+        useGlobalHours?: T;
         workingHours?: T;
         tagline?: T;
+        useGlobalSocialLinks?: T;
         socialLinks?:
           | T
           | {
@@ -3050,21 +3157,17 @@ export interface NavigationSelect<T extends boolean = true> {
               id?: T;
             };
       };
-  pageDropdowns?:
+  items?:
     | T
     | {
+        type?: T;
+        page?: T;
+        pageLabel?: T;
+        dropdownLabel?: T;
+        dropdownSource?: T;
         parentPage?: T;
-        label?: T;
-        order?: T;
         showViewAll?: T;
         viewAllLabel?: T;
-        id?: T;
-      };
-  dropdowns?:
-    | T
-    | {
-        label?: T;
-        order?: T;
         children?:
           | T
           | {
@@ -3074,13 +3177,8 @@ export interface NavigationSelect<T extends boolean = true> {
               icon?: T;
               id?: T;
             };
-        id?: T;
-      };
-  specialLinks?:
-    | T
-    | {
-        label?: T;
-        link?:
+        specialLabel?: T;
+        specialLink?:
           | T
           | {
               type?: T;
@@ -3089,7 +3187,6 @@ export interface NavigationSelect<T extends boolean = true> {
               anchor?: T;
               newTab?: T;
             };
-        order?: T;
         id?: T;
       };
   cta?:
@@ -3119,6 +3216,7 @@ export interface FooterSelect<T extends boolean = true> {
   brand?:
     | T
     | {
+        useGlobalBrand?: T;
         logo?: T;
         name?: T;
         tagline?: T;
@@ -3145,6 +3243,7 @@ export interface FooterSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  useGlobalContact?: T;
   contact?:
     | T
     | {
@@ -3152,6 +3251,7 @@ export interface FooterSelect<T extends boolean = true> {
         email?: T;
         address?: T;
       };
+  useGlobalSocialLinks?: T;
   socialLinks?:
     | T
     | {
@@ -3174,6 +3274,7 @@ export interface FooterSelect<T extends boolean = true> {
               newTab?: T;
             };
       };
+  useGlobalCopyright?: T;
   copyright?: T;
   bottomLinks?:
     | T
