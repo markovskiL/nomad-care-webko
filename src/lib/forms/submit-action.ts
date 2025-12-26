@@ -18,17 +18,13 @@ export async function submitFormAction(
   try {
     const payload = await getPayloadClient()
 
-    // Format the submission data for Payload's form submissions
-    const submissionData = Object.entries(data).map(([field, value]) => ({
-      field,
-      value: String(value ?? ""),
-    }))
-
     await payload.create({
       collection: "form-submissions",
+      draft: false,
       data: {
         form: typeof formId === "string" ? parseInt(formId, 10) : formId,
-        submissionData,
+        submittedAt: new Date().toISOString(),
+        data,
       },
     })
 
