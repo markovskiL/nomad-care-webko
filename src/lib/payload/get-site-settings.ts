@@ -41,7 +41,7 @@ export async function getSiteSettings(locale?: string): Promise<SiteSettingsData
     const settings = await payload.findGlobal({
       slug: "site-settings",
       locale: locale as PayloadLocale,
-      depth: 1,
+      depth: 2, // Increased to resolve logo media relationship
     })
     return settings as SiteSettingsData
   } catch {

@@ -1,16 +1,16 @@
 import { notFound } from "next/navigation"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, setRequestLocale } from "next-intl/server"
-import { Navigation, Footer } from "@webko-labs/ui"
-import type { NavItemChild } from "@webko-labs/ui"
+import { NavigationRenderer, Footer } from "@webko-labs/ui"
+import type { NavItemChild, NavMenuItem } from "@webko-labs/ui"
 import { routing } from "@/lib/i18n/routing"
 import { getTheme, generateThemeCSS } from "@/lib/theme/get-theme"
 import { getNavigation } from "@/lib/payload/get-navigation"
 import { getFooter } from "@/lib/payload/get-footer"
-import { getPagesForNavigation } from "@/lib/payload/get-pages-for-nav"
 import { getChildPagesByParentId } from "@/lib/payload/get-page"
 import { getPagesForFooter } from "@/lib/payload/get-pages-for-footer"
 import { getLanguages } from "@/lib/payload/get-languages"
+import { getSiteSettings } from "@/lib/payload/get-site-settings"
 
 import "./globals.css"
 
@@ -37,43 +37,46 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   // Get messages for client components
   const messages = await getMessages()
 
-  // Fetch navigation, footer, theme, and languages data (hrefs already resolved)
-  const [navigation, footer, navPages, footerPages, theme, languagesData] = await Promise.all([
+  // Fetch navigation, footer, theme, languages, and site settings data (hrefs already resolved)
+  const [navigation, footer, footerPages, theme, languagesData, siteSettings] = await Promise.all([
     getNavigation(locale),
     getFooter(locale),
-    getPagesForNavigation(locale),
     getPagesForFooter(locale),
     getTheme(),
     getLanguages(),
+    getSiteSettings(locale),
   ])
 
-  // Build page dropdown children from navigation config
+  // Build page dropdown children for dropdowns with dropdownSource="children"
   const pageDropdownChildren: Record<string | number, NavItemChild[]> = {}
 
-  if (navigation?.pageDropdowns) {
-    await Promise.all(
-      navigation.pageDropdowns.map(async (dropdown) => {
-        const parentPage = dropdown.parentPage
-        if (!parentPage || typeof parentPage === "number") return
+  const items = (navigation?.items ?? []) as NavMenuItem[]
+  const dropdownsWithChildren = items.filter(
+    (item) => item.type === "dropdown" && item.dropdownSource === "children" && item.parentPage
+  )
 
-        // Pathnames already resolved by getChildPagesByParentId
-        const children = await getChildPagesByParentId(parentPage.id as number, locale)
-        pageDropdownChildren[parentPage.id] = children.map((child) => {
-          const serviceData = child.serviceData as {
-            description?: string
-            icon?: string
-          } | undefined
+  await Promise.all(
+    dropdownsWithChildren.map(async (dropdown) => {
+      const parentPage = dropdown.parentPage
+      if (!parentPage || typeof parentPage === "number") return
 
-          return {
-            label: child.title,
-            href: child.pathname,
-            description: serviceData?.description ?? null,
-            icon: serviceData?.icon ?? null,
-          }
-        })
+      // Fetch children of the parent page
+      const children = await getChildPagesByParentId(parentPage.id as number, locale)
+      pageDropdownChildren[parentPage.id] = children.map((child) => {
+        const serviceData = child.serviceData as {
+          description?: string
+          icon?: string
+        } | undefined
+
+        return {
+          label: child.title,
+          href: child.pathname,
+          description: serviceData?.description ?? null,
+          icon: serviceData?.icon ?? null,
+        }
       })
-    )
-  }
+    })
+  )
 
   return (
     <html lang={locale}>
@@ -83,7 +86,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
       </head>
       <body className="antialiased">
         <NextIntlClientProvider messages={messages}>
-          <Navigation data={navigation} pageLinks={navPages} pageDropdownChildren={pageDropdownChildren} languages={languagesData.languages} />
+          <NavigationRenderer style={theme.defaultNavigationStyle} data={navigation} siteSettings={siteSettings} pageDropdownChildren={pageDropdownChildren} languages={languagesData.languages} />
           {children}
           <Footer data={footer} pageLinks={footerPages} />
         </NextIntlClientProvider>

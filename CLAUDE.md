@@ -176,3 +176,159 @@ function createRichTextAnswer(text) {
 - Always check the table schema first (`SELECT column_name FROM information_schema.columns WHERE table_name = 'table_name'`)
 - Version tables (`_pages_v_*`) are auto-managed by Payload - skip these
 - The `_parent_id` can be either an integer or a string (MongoDB ObjectId format) depending on the table
+
+---
+
+## Creating Pages via SQL
+
+When creating pages directly via SQL (instead of through the admin panel), you must create records in multiple tables for the pages to appear correctly in the admin panel.
+
+### Required Tables
+
+1. **`pages`** - Main page data (non-localized fields)
+2. **`pages_locales`** - Localized content (title, description, etc.)
+3. **`_pages_v`** - Version record (REQUIRED for admin panel visibility)
+4. **`_pages_v_locales`** - Version localized content
+
+For service pages, also:
+5. **`pages_service_data_features`** - Feature list items
+6. **`pages_service_data_features_locales`** - Localized feature text
+
+### Step 1: Create the Page
+
+```sql
+INSERT INTO pages (
+  slug,
+  parent_id,
+  pathname,
+  visibility_show_in_footer,
+  visibility_footer_column,
+  visibility_footer_order,
+  template,
+  service_data_icon,
+  service_data_image_id,
+  _status
+)
+VALUES (
+  'home-cleaning',      -- slug
+  10,                   -- parent_id (Services page)
+  '/services/home-cleaning',
+  true,                 -- show in footer
+  'services',           -- footer column: 'company', 'services', 'support'
+  1,                    -- footer order
+  'service',            -- template: 'home', 'about', 'services', 'service', 'contact'
+  'home',               -- icon: 'home', 'building', 'sparkles', 'star', 'truck', etc.
+  4,                    -- media id for service image
+  'published'           -- status: 'draft' or 'published'
+)
+RETURNING id;
+```
+
+### Step 2: Add Localized Content
+
+```sql
+INSERT INTO pages_locales (title, service_data_description, service_data_price, _locale, _parent_id)
+VALUES
+  ('Home Cleaning', 'Description in English...', 'From $99', 'en', 11),
+  ('Домашно почистване', 'Описание на български...', 'От 99лв', 'bg', 11);
+```
+
+### Step 3: Create Version Record (CRITICAL!)
+
+**Without this, pages won't appear in the admin panel!**
+
+```sql
+INSERT INTO _pages_v (
+  parent_id,
+  version_slug,
+  version_parent_id,
+  version_pathname,
+  version_visibility_show_in_footer,
+  version_visibility_footer_column,
+  version_visibility_footer_order,
+  version_navigation_style,
+  version_template,
+  version_service_data_icon,
+  version_service_data_image_id,
+  version_updated_at,
+  version_created_at,
+  version__status,
+  latest
+)
+SELECT
+  id,
+  slug,
+  parent_id,
+  pathname,
+  visibility_show_in_footer,
+  visibility_footer_column::text::enum__pages_v_version_visibility_footer_column,
+  visibility_footer_order,
+  navigation_style::text::enum__pages_v_version_navigation_style,
+  template::text::enum__pages_v_version_template,
+  service_data_icon::text::enum__pages_v_version_service_data_icon,
+  service_data_image_id,
+  updated_at,
+  created_at,
+  _status::text::enum__pages_v_version_status,
+  true  -- latest = true
+FROM pages
+WHERE id = 11;  -- page id
+```
+
+**Note:** Enum values must be cast from `pages` table enums to `_pages_v` table enums using `::text::enum_name`.
+
+### Step 4: Create Version Locales
+
+```sql
+INSERT INTO _pages_v_locales (version_title, version_service_data_description, version_service_data_price, _locale, _parent_id)
+SELECT
+  pl.title,
+  pl.service_data_description,
+  pl.service_data_price,
+  pl._locale,
+  pv.id
+FROM pages_locales pl
+JOIN _pages_v pv ON pv.parent_id = pl._parent_id
+WHERE pl._parent_id = 11;  -- page id
+```
+
+### Step 5: Add Service Features (for service template)
+
+```sql
+-- Create feature entries (id is a string/UUID)
+INSERT INTO pages_service_data_features (_order, _parent_id, id)
+VALUES
+  (0, 11, 'hc-f1'),
+  (1, 11, 'hc-f2'),
+  (2, 11, 'hc-f3');
+
+-- Add localized feature text
+INSERT INTO pages_service_data_features_locales (feature, _locale, _parent_id)
+VALUES
+  ('All rooms dusted and vacuumed', 'en', 'hc-f1'),
+  ('Всички стаи почистени и прахосмукани', 'bg', 'hc-f1'),
+  ('Kitchen deep cleaning', 'en', 'hc-f2'),
+  ('Дълбоко почистване на кухнята', 'bg', 'hc-f2');
+```
+
+### Available Enums
+
+**Templates (`enum_pages_template`):**
+- `home`, `about`, `services`, `service`, `contact`
+
+**Icons (`enum_pages_service_data_icon`):**
+- `home`, `building`, `sparkles`, `brush`, `droplets`, `leaf`, `shield`, `clock`, `star`, `truck`, `heart`, `users`, `award`, `message-square`
+
+**Footer Columns (`enum_pages_visibility_footer_column`):**
+- `company`, `services`, `support`
+
+**Status (`enum_pages_status`):**
+- `draft`, `published`
+
+### Troubleshooting
+
+If pages don't appear in admin panel:
+1. Check `_pages_v` has a record with `parent_id` = your page id
+2. Check `_pages_v_locales` has locale records for the version
+3. Ensure `latest = true` on the version record
+4. Ensure `version__status = 'published'` on the version record

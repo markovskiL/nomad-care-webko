@@ -51,6 +51,7 @@ export function generateFormSchema(
           message: requiredMessage,
         })
       } else if (field.type === "number") {
+        // Number fields are already coerced, just add min check
         fieldSchema = (fieldSchema as z.ZodNumber).min(1, requiredMessage)
       } else {
         fieldSchema = (fieldSchema as z.ZodString).min(1, requiredMessage)

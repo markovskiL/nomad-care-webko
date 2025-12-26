@@ -16,6 +16,7 @@ export const i18nConfig = createI18nConfig({
 })
 
 export type Locale = (typeof i18nConfig.locales)[number]
+export type EnabledLocale = (typeof i18nConfig.enabledLocales)[number]
 /** Locale type for Payload API calls (includes "all" for fetching all locales) */
 export type PayloadLocale = Locale | "all" | undefined
 export const ENABLE_LOCALIZATION = i18nConfig.enabled

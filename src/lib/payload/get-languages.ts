@@ -32,7 +32,7 @@ export async function getLanguages(): Promise<LanguagesData> {
       languages: enabledLanguages ?? [],
       defaultLanguage: data.defaultLanguage ?? "en",
     }
-  } catch 
+  } catch
   {
     // Return defaults if global doesn't exist yet
     return {
