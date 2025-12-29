@@ -1,12 +1,12 @@
-import { resolveAllHrefs } from "@/lib/payload/resolve-links"
+import { resolveAllHrefs } from "@webko-labs/sdk"
+import { i18nConfig } from "@/lib/i18n/config"
 import { BlockRenderer, type SectionBlock } from "@/lib/blocks"
 import { submitFormAction } from "@/lib/forms"
 import type { TemplateProps } from "./types"
 
-export function DefaultTemplate({ page, locale, siteSettings }: TemplateProps) 
-{
+export function DefaultTemplate({ page, locale, siteSettings }: TemplateProps) {
     // Resolve sections
-    const sections = resolveAllHrefs(page.sections ?? [], locale) as SectionBlock[]
+    const sections = resolveAllHrefs(page.sections ?? [], locale, i18nConfig.defaultLocale) as SectionBlock[]
 
     return (
         <main>

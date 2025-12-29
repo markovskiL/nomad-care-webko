@@ -1,5 +1,4 @@
-import { getPayload } from "payload"
-import config from "@payload-config"
+import { getPayloadClient } from "@webko-labs/sdk"
 
 export type NavigationStyle = "classic" | "modern" | "transparent"
 
@@ -13,7 +12,8 @@ export interface SiteTheme extends ThemeColors {
   defaultNavigationStyle: NavigationStyle
 }
 
-const DEFAULT_THEME: SiteTheme = {
+const DEFAULT_THEME: SiteTheme =
+{
   primary: "#3b82f6",
   secondary: "#1e3a5f",
   accent: "#facc15",
@@ -25,7 +25,7 @@ const DEFAULT_THEME: SiteTheme = {
  */
 export async function getTheme(): Promise<SiteTheme> {
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const settings = await payload.findGlobal({ slug: "site-settings" }) as {
       theme?: {
         primaryColor?: string | null
@@ -41,7 +41,8 @@ export async function getTheme(): Promise<SiteTheme> {
       accent: settings.theme?.accentColor || DEFAULT_THEME.accent,
       defaultNavigationStyle: settings.defaultNavigationStyle || DEFAULT_THEME.defaultNavigationStyle,
     }
-  } catch {
+  }
+  catch {
     // Fallback to defaults if CMS is unavailable
     return DEFAULT_THEME
   }

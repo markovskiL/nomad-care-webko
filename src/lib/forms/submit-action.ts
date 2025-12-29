@@ -1,6 +1,6 @@
 "use server"
 
-import { getPayloadClient } from "@/lib/payload"
+import { getPayloadClient } from "@webko-labs/sdk"
 
 interface SubmitResult {
   success: boolean

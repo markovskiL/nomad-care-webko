@@ -1,12 +1,9 @@
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { getPayloadClient } from "@webko-labs/sdk"
 
 export const GET = async (request: Request) => {
-  const payload = await getPayload({
-    config: configPromise,
-  })
+  const payload = await getPayloadClient()
 
   return Response.json({
-    message: 'This is an example of a custom route.',
+    message: "This is an example of a custom route.",
   })
 }

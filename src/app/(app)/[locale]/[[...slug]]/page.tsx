@@ -1,30 +1,27 @@
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
-import { getPageByPathname, getAllPages, getSiteSettings } from "@/lib/payload"
+import { getPageByPathname, getAllPages, getSiteSettings } from "@webko-labs/sdk"
 import { routing } from "@/lib/i18n/routing"
 import { ENABLE_LOCALIZATION, type Locale } from "@/lib/i18n/config"
 import { getTemplate } from "@/templates"
 
 export const revalidate = 60
 
-interface PageProps 
-{
+interface PageProps {
   params: Promise<
-  {
-    locale: string
-    slug?: string[]
-  }>
+    {
+      locale: string
+      slug?: string[]
+    }>
 }
 
-function getPathnameFromSlug(slugArray?: string[]): string 
-{
+function getPathnameFromSlug(slugArray?: string[]): string {
   if (!slugArray || slugArray.length === 0) return "/"
   return "/" + slugArray.join("/")
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> 
-{
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug: slugArray } = await params
 
   const pathname = getPathnameFromSlug(slugArray)
@@ -34,8 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ENABLE_LOCALIZATION ? locale : undefined
   )
 
-  if (!page) 
-  {
+  if (!page) {
     return { title: "Page Not Found" }
   }
 
@@ -45,34 +41,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export async function generateStaticParams() 
-{
+export async function generateStaticParams() {
   const pages = await getAllPages()
 
   return routing.locales.flatMap((locale) =>
     pages.map((page) => (
-    {
-      locale,
-      slug: page.pathname === "/" ? [] : (page.pathname as string).slice(1).split("/"),
-    }))
+      {
+        locale,
+        slug: page.pathname === "/" ? [] : (page.pathname as string).slice(1).split("/"),
+      }))
   )
 }
 
-export default async function Page({ params }: PageProps) 
-{
+export default async function Page({ params }: PageProps) {
   const { locale, slug: slugArray } = await params
 
   setRequestLocale(locale)
 
   const pathname = getPathnameFromSlug(slugArray)
   const [page, siteSettings] = await Promise.all(
-  [
-    getPageByPathname(pathname, ENABLE_LOCALIZATION ? (locale as Locale) : undefined),
-    getSiteSettings(ENABLE_LOCALIZATION ? locale : undefined),
-  ])
+    [
+      getPageByPathname(pathname, ENABLE_LOCALIZATION ? (locale as Locale) : undefined),
+      getSiteSettings(ENABLE_LOCALIZATION ? locale : undefined),
+    ])
 
-  if (!page) 
-  {
+  if (!page) {
     notFound()
   }
 

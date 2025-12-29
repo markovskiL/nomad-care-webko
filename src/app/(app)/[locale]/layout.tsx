@@ -5,12 +5,15 @@ import { NavigationRenderer, Footer } from "@webko-labs/ui"
 import type { NavItemChild, NavMenuItem } from "@webko-labs/ui"
 import { routing } from "@/lib/i18n/routing"
 import { getTheme, generateThemeCSS } from "@/lib/theme/get-theme"
-import { getNavigation } from "@/lib/payload/get-navigation"
-import { getFooter } from "@/lib/payload/get-footer"
-import { getChildPagesByParentId } from "@/lib/payload/get-page"
-import { getPagesForFooter } from "@/lib/payload/get-pages-for-footer"
-import { getLanguages } from "@/lib/payload/get-languages"
-import { getSiteSettings } from "@/lib/payload/get-site-settings"
+import {
+  getNavigation,
+  getFooter,
+  getChildPagesByParentId,
+  getPagesForFooter,
+  getLanguages,
+  getSiteSettings
+} from "@webko-labs/sdk"
+import { i18nConfig } from "@/lib/i18n/config"
 
 import "./globals.css"
 
@@ -39,9 +42,9 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
 
   // Fetch navigation, footer, theme, languages, and site settings data (hrefs already resolved)
   const [navigation, footer, footerPages, theme, languagesData, siteSettings] = await Promise.all([
-    getNavigation(locale),
-    getFooter(locale),
-    getPagesForFooter(locale),
+    getNavigation(locale, i18nConfig.defaultLocale),
+    getFooter(locale, i18nConfig.defaultLocale),
+    getPagesForFooter(locale, i18nConfig.defaultLocale),
     getTheme(),
     getLanguages(),
     getSiteSettings(locale),
@@ -61,7 +64,11 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
       if (!parentPage || typeof parentPage === "number") return
 
       // Fetch children of the parent page
-      const children = await getChildPagesByParentId(parentPage.id as number, locale)
+      const children = await getChildPagesByParentId(
+        parentPage.id as number,
+        locale,
+        i18nConfig.defaultLocale
+      )
       pageDropdownChildren[parentPage.id] = children.map((child) => {
         const serviceData = child.serviceData as {
           description?: string
