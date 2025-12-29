@@ -1,7 +1,7 @@
 // Webko site configuration
 import {
   createPayloadConfig,
-  serviceBusinessPreset, serviceBusinessGlobals,
+  allCollections, allGlobals,
 } from "@webko-labs/payload-config"
 
 export default createPayloadConfig({
@@ -10,8 +10,15 @@ export default createPayloadConfig({
   secret: process.env.PAYLOAD_SECRET || "",
   databaseURL: process.env.POSTGRES_URL || "",
   blobToken: process.env.BLOB_READ_WRITE_TOKEN,
-  collections: serviceBusinessPreset,
-  globals: serviceBusinessGlobals,
+  collections: allCollections,
+  globals: allGlobals,
+  overrides:
+  {
+    typescript:
+    {
+      outputFile: "src/payload-types.ts",
+    },
+  },
   locales: [
     { label: "English", code: "en" },
     { label: "Български", code: "bg" },
