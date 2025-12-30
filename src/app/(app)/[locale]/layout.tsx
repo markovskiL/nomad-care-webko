@@ -9,7 +9,6 @@ import {
   getNavigation,
   getFooter,
   getChildPagesByParentId,
-  getPagesForFooter,
   getLanguages,
   getSiteSettings,
   getUIStrings
@@ -42,10 +41,9 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const messages = await getMessages()
 
   // Fetch navigation, footer, theme, languages, and site settings data (hrefs already resolved)
-  const [navigation, footer, footerPages, theme, languagesData, siteSettings, uiStrings] = await Promise.all([
+  const [navigation, footer, theme, languagesData, siteSettings, uiStrings] = await Promise.all([
     getNavigation(locale, i18nConfig.defaultLocale),
     getFooter(locale, i18nConfig.defaultLocale),
-    getPagesForFooter(locale, i18nConfig.defaultLocale),
     getTheme(),
     getLanguages(),
     getSiteSettings(locale),
@@ -97,7 +95,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <NextIntlClientProvider messages={messages}>
           <NavigationRenderer style={theme.defaultNavigationStyle} data={navigation} siteSettings={siteSettings} pageDropdownChildren={pageDropdownChildren} languages={languagesData.languages} uiStrings={uiStrings!.navigation} />
           {children}
-          <Footer data={footer} pageLinks={footerPages} uiStrings={uiStrings!.footerStrings} />
+          <Footer data={footer} siteSettings={siteSettings} uiStrings={uiStrings!.footerStrings} />
         </NextIntlClientProvider>
       </body>
     </html>
