@@ -1,22 +1,22 @@
 // Webko site configuration
-import {
-  createPayloadConfig,
-  allCollections, allGlobals,
-} from "@webko-labs/payload-config"
+import { createPayloadConfig } from "@webko-labs/payload-config/factory"
+import { allCollections, allGlobals } from "@webko-labs/payload-config/presets"
+import { ALL_BLOCKS } from "@webko-labs/payload-config/blocks"
 
 export default createPayloadConfig({
-  siteName: "My Site",
+  siteName: "Nomad Care",
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000",
   secret: process.env.PAYLOAD_SECRET || "",
   databaseURL: process.env.POSTGRES_URL || "",
   blobToken: process.env.BLOB_READ_WRITE_TOKEN,
   collections: allCollections,
   globals: allGlobals,
-  overrides:
+  blocks: ALL_BLOCKS,
+  overrides: 
   {
-    typescript:
+    typescript: 
     {
-      outputFile: "src/payload-types.ts",
+      autoGenerate: false,
     },
   },
   locales: [

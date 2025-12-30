@@ -11,7 +11,8 @@ import {
   getChildPagesByParentId,
   getPagesForFooter,
   getLanguages,
-  getSiteSettings
+  getSiteSettings,
+  getUIStrings
 } from "@webko-labs/sdk"
 import { i18nConfig } from "@/lib/i18n/config"
 
@@ -41,13 +42,14 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const messages = await getMessages()
 
   // Fetch navigation, footer, theme, languages, and site settings data (hrefs already resolved)
-  const [navigation, footer, footerPages, theme, languagesData, siteSettings] = await Promise.all([
+  const [navigation, footer, footerPages, theme, languagesData, siteSettings, uiStrings] = await Promise.all([
     getNavigation(locale, i18nConfig.defaultLocale),
     getFooter(locale, i18nConfig.defaultLocale),
     getPagesForFooter(locale, i18nConfig.defaultLocale),
     getTheme(),
     getLanguages(),
     getSiteSettings(locale),
+    getUIStrings(locale),
   ])
 
   // Build page dropdown children for dropdowns with dropdownSource="children"
@@ -93,9 +95,9 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
       </head>
       <body className="antialiased">
         <NextIntlClientProvider messages={messages}>
-          <NavigationRenderer style={theme.defaultNavigationStyle} data={navigation} siteSettings={siteSettings} pageDropdownChildren={pageDropdownChildren} languages={languagesData.languages} />
+          <NavigationRenderer style={theme.defaultNavigationStyle} data={navigation} siteSettings={siteSettings} pageDropdownChildren={pageDropdownChildren} languages={languagesData.languages} uiStrings={uiStrings!.navigation} />
           {children}
-          <Footer data={footer} pageLinks={footerPages} />
+          <Footer data={footer} pageLinks={footerPages} uiStrings={uiStrings!.footerStrings} />
         </NextIntlClientProvider>
       </body>
     </html>

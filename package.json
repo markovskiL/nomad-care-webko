@@ -28,10 +28,10 @@
     "@payloadcms/storage-vercel-blob": "3.68.2",
     "@payloadcms/ui": "3.68.2",
     "@tailwindcss/postcss": "^4.1.18",
-    "@webko-labs/i18n": "file:../webko/packages/i18n",
-    "@webko-labs/payload-config": "file:../webko/packages/payload-config",
-    "@webko-labs/sdk": "file:../webko/packages/sdk",
-    "@webko-labs/ui": "file:../webko/packages/ui",
+    "@webko-labs/i18n": "workspace:*",
+    "@webko-labs/payload-config": "workspace:*",
+    "@webko-labs/sdk": "workspace:*",
+    "@webko-labs/ui": "workspace:*",
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",
     "embla-carousel-autoplay": "^8.6.0",
@@ -48,6 +48,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.3",
     "@playwright/test": "1.56.1",
     "@testing-library/react": "16.3.0",
     "@types/node": "^22.5.4",

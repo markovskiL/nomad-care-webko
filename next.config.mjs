@@ -9,13 +9,24 @@ import { fileURLToPath } from "url"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Parse server URL for remote images
+const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL
+const serverUrlPattern = serverUrl ? (() => {
+  try {
+    const url = new URL(serverUrl)
+    return { protocol: url.protocol.replace(":", ""), hostname: url.hostname }
+  } catch {
+    return null
+  }
+})() : null
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: "http", hostname: "localhost" },
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
-      { protocol: "https", hostname: "nomad-care-webko.vercel.app" },
+      ...(serverUrlPattern ? [serverUrlPattern] : []),
     ],
   },
   webpack: (webpackConfig) => {
