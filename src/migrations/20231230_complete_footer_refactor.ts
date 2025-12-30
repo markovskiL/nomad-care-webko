@@ -101,7 +101,7 @@ export async function up({ payload, db }: MigrateUpArgs): Promise<void> {
 
     payload.logger.info('✓✓✓ Footer migration complete!')
   } catch (error) {
-    payload.logger.error('Migration failed:', error)
+    payload.logger.error(`Migration failed: ${error}`)
     throw error
   }
 }
@@ -140,6 +140,6 @@ export async function down({ payload, db }: MigrateDownArgs): Promise<void> {
 
     payload.logger.info('✓ Rollback complete')
   } catch (error) {
-    payload.logger.error('Rollback failed:', error)
+    payload.logger.error(`Rollback failed: ${error}`)
   }
 }
